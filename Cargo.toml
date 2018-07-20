@@ -2,7 +2,7 @@
 name = "enclose"
 version = "0.1.0"
 authors = ["Денис Котляров <denis2005991@gmail.com>"]
-repository = "https://github.com/clucompany/cluColor.git"
+repository = "https://github.com/clucompany/Enclose.git"
 license = "MIT"
 readme = "README.md"
 
