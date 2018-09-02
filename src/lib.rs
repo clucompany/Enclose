@@ -90,6 +90,13 @@ for a in wait_all {
 ///Macro for cloning values to close.
 #[macro_export]
 macro_rules! enclose {
+	(($( $a:ident => $c:ident ),*) $b:expr ) => {{
+		$(
+			let $c = $a.clone();
+		)*
+
+		$b
+	}};
 	(($( $a:ident ),*) $b:expr ) => {{
 		$(
 			let $a = $a.clone();
@@ -98,6 +105,15 @@ macro_rules! enclose {
 		$b
 	}};
 }
+
+///Macro for cloning values to close. Alternative short record.
+#[macro_export]
+macro_rules! enc {
+	($($arg:tt)*) => {
+		enclose!( $($arg)* )
+	};
+}
+
 
 #[cfg(test)]
 mod tests {
@@ -109,8 +125,28 @@ mod tests {
 	#[test]
 	fn easy() {
 		let v = Arc::new(Mutex::new( 0 ));
-		let thread = thread::spawn( enclose!((v) move || {
+		let thread = thread::spawn( enc!((v) move || {
 			let mut v_lock = match v.lock() {
+				Ok(a) => a,
+				Err(e) => e.into_inner(),
+			};
+			*v_lock += 1;
+		}));
+
+		thread.join().unwrap();
+		{
+			let v_lock = match v.lock() {
+				Ok(a) => a,
+				Err(e) => e.into_inner(),
+			};
+			assert_eq!(*v_lock, 1);
+		}
+	}
+	#[test]
+	fn easy_extract() {
+		let v = Arc::new(Mutex::new( 0 ));
+		let thread = thread::spawn( enc!((v => my_v) move || {
+			let mut v_lock = match my_v.lock() {
 				Ok(a) => a,
 				Err(e) => e.into_inner(),
 			};
@@ -137,7 +173,7 @@ mod tests {
 
 		for _a in 0..count_thread {
 			wait_all.push({
-				thread::spawn( enclose!((v, v2) move || {
+				thread::spawn( enc!((v, v2) move || {
 					let mut v_lock = match v.lock() {
 						Ok(a) => a,
 						Err(e) => e.into_inner(),
