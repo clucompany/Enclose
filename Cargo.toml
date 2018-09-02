@@ -10,10 +10,4 @@ description = "A convenient macro for cloning values into a closure."
 keywords = ["enclose", "enclose_macro", "macro", "clucompany"]
 categories = ["development-tools"]
 
-
-[lib]
-name = "enclose"
-path = "src/lib.rs"
-crate-type = ["dylib", "rlib"]
-
 [dependencies]
