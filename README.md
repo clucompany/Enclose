@@ -67,7 +67,32 @@ A convenient macro for cloning values into a closure.
 			};
 			assert_eq!(*v_lock, 5);
 	}
-	
+
+# Use 3
+
+	use std::sync::Arc;
+	use std::sync::Mutex;
+	use std::thread;
+
+	let v = Arc::new(Mutex::new( 0 ));
+	let thread = thread::spawn( enc!((v => MY_LOCKER) move || {
+		let mut v_lock = match MY_LOCKER.lock() {
+			Ok(a) => a,
+			Err(e) => e.into_inner(),
+		};
+		*v_lock += 1;
+	}));
+
+	thread.join().unwrap();
+	{
+		let v_lock = match v.lock() {
+			Ok(a) => a,
+			Err(e) => e.into_inner(),
+		};
+		assert_eq!(*v_lock, 1);
+	}
+
+
 # License
 
 Copyright 2018 #UlinProject Денис Котляров
