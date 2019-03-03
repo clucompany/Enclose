@@ -95,6 +95,6 @@ A convenient macro for cloning values into a closure.
 
 # License
 
-Copyright 2018 #UlinProject Денис Котляров
+Copyright 2019 #UlinProject (Denis Kotlyarov) Денис Котляров
 
 Licensed under the MIT License
