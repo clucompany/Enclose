@@ -8,8 +8,8 @@ use enclose::enclose;
 
 fn main() {
      let v = Arc::new(Mutex::new( 0 ));
-	let thread = thread::spawn( enc!((v => MY_LOCKER) move || {
-          let mut v_lock = match MY_LOCKER.lock() {
+	let thread = thread::spawn( enc!((v => my_locker) move || {
+          let mut v_lock = match my_locker.lock() {
                Ok(a) => a,
                Err(e) => e.into_inner(),
           };
