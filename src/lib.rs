@@ -27,6 +27,8 @@ use std::thread;
 use std::sync::Arc;
 use std::sync::Mutex;
 
+use enclose::enclose;
+
 let v = Arc::new(Mutex::new( 0 ));
 let thread = thread::spawn( enclose!((v) move || {
 	let mut v_lock = match v.lock() {
@@ -52,6 +54,9 @@ use std::thread;
 use std::sync::Arc;
 use std::sync::Mutex;
 use std::sync::RwLock;
+
+use enclose::enclose;
+
 
 let v = Arc::new(Mutex::new( 0 ));
 let v2 = Arc::new(RwLock::new( (0, 2, 3, 4) ));
@@ -92,13 +97,15 @@ use std::sync::Arc;
 use std::sync::Mutex;
 use std::thread;
 
+use enclose::enclose;
+
 let v = Arc::new(Mutex::new( 0 ));
-let thread = thread::spawn( enc!((v => MY_LOCKER) move || {
-     let mut v_lock = match MY_LOCKER.lock() {
-          Ok(a) => a,
-          Err(e) => e.into_inner(),
-     };
-     *v_lock += 1;
+let thread = thread::spawn( enclose!((v => MY_LOCKER) move || {
+	let mut v_lock = match MY_LOCKER.lock() {
+		Ok(a) => a,
+		Err(e) => e.into_inner(),
+	};
+	*v_lock += 1;
  }));
 
 thread.join().unwrap();
@@ -135,8 +142,8 @@ macro_rules! enclose {
 ///Macro for cloning values to close. Alternative short record.
 #[macro_export]
 macro_rules! enc {
-	($($arg:tt)*) => {
-		enclose!( $($arg)* )
+	($($tt:tt)*) => {
+		enclose!( $($tt)* )
 	};
 }
 
@@ -151,7 +158,7 @@ mod tests {
 	#[test]
 	fn easy() {
 		let v = Arc::new(Mutex::new( 0 ));
-		let thread = thread::spawn( enc!((v) move || {
+		let thread = thread::spawn( enclose!((v) move || {
 			let mut v_lock = match v.lock() {
 				Ok(a) => a,
 				Err(e) => e.into_inner(),
@@ -171,7 +178,7 @@ mod tests {
 	#[test]
 	fn easy_extract() {
 		let v = Arc::new(Mutex::new( 0 ));
-		let thread = thread::spawn( enc!((v => my_v) move || {
+		let thread = thread::spawn( enclose!((v => my_v) move || {
 			let mut v_lock = match my_v.lock() {
 				Ok(a) => a,
 				Err(e) => e.into_inner(),
@@ -199,7 +206,7 @@ mod tests {
 
 		for _a in 0..count_thread {
 			wait_all.push({
-				thread::spawn( enc!((v, v2) move || {
+				thread::spawn( enclose!((v, v2) move || {
 					let mut v_lock = match v.lock() {
 						Ok(a) => a,
 						Err(e) => e.into_inner(),

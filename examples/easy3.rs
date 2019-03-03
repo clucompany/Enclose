@@ -1,11 +1,9 @@
 
-
 use std::sync::Arc;
 use std::sync::Mutex;
 use std::sync::RwLock;
 use std::thread;
 
-use enclose::enc;
 use enclose::enclose;
 
 fn main() {
@@ -18,7 +16,7 @@ fn main() {
 
 	for _a in 0..count_thread {
 		wait_all.push({
-			thread::spawn( enc!((v, v2) move || {
+			thread::spawn( enclose!((v, v2) move || {
 				let mut v_lock = match v.lock() {
 					Ok(a) => a,
 					Err(e) => e.into_inner(),
