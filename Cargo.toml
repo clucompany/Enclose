@@ -1,6 +1,6 @@
 [package]
 name = "enclose"
-version = "0.1.3"
+version = "0.1.4"
 authors = ["Denis Kotlyarov (Денис Котляров) <denis2005991@gmail.com>"]
 repository = "https://github.com/clucompany/Enclose.git"
 license = "MIT"
