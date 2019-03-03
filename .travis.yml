@@ -9,5 +9,5 @@ matrix:
     - rust: nightly
 script:
   - cargo build --verbose
-  - cargo test --lib --verbose
+  - cargo test --verbose
 
