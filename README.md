@@ -7,8 +7,6 @@ A convenient macro for cloning values into a closure.
 [![Documentation](https://docs.rs/enclose/badge.svg)](https://docs.rs/enclose)
 
 
-A convenient macro for cloning values into a closure.
-
 # Use
 ```
 use enclose::enclose;
