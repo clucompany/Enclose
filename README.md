@@ -7,30 +7,58 @@ A convenient macro for cloning values into a closure.
 [![Documentation](https://docs.rs/enclose/badge.svg)](https://docs.rs/enclose)
 
 
+A convenient macro for cloning values into a closure.
+
 # Use
 ```
-use std::thread;
+use enclose::enclose;
+
+fn main() {
+	let clone_data = 0;
+	let add_data = 100;
+	my_enclose( enclose!((mut clone_data, add_data) move || {
+		println!("#0 {:?}", clone_data);
+		clone_data += add_data;
+		println!("#1 {:?}", clone_data);
+		
+		assert_eq!(clone_data, 100);
+	}));
+	
+	assert_eq!(clone_data, 0);
+}
+
+fn my_enclose<F: FnOnce() -> R, R>(a: F) -> R {
+	a()
+}
+```
+
+# Use 1
+
+```
 use std::sync::Arc;
 use std::sync::Mutex;
+use std::thread;
 
 use enclose::enclose;
 
-let v = Arc::new(Mutex::new( 0 ));
-let thread = thread::spawn( enclose!((v) move || {
-	let mut v_lock = match v.lock() {
-		Ok(a) => a,
-		Err(e) => e.into_inner(),
-	};
-	*v_lock += 1;
-}));
+fn main() {
+	let mutex_data = Arc::new(Mutex::new( 0 ));
+	let thread = thread::spawn( enclose!((mutex_data => data) move || {
+		let mut lock = match data.lock() {
+			Ok(a) => a,
+			Err(e) => e.into_inner(),
+		};
+		*lock += 1;
+	}));
 
-thread.join().unwrap();
-{
-	let v_lock = match v.lock() {
-		Ok(a) => a,
-		Err(e) => e.into_inner(),
-	};
-	assert_eq!(*v_lock, 1);
+	thread.join().unwrap();
+	{
+		let lock = match mutex_data.lock() {
+			Ok(a) => a,
+			Err(e) => e.into_inner(),
+		};
+		assert_eq!(*lock, 1);
+	}
 }
 ```
 
