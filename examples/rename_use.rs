@@ -6,21 +6,22 @@ use std::thread;
 use enclose::enclose;
 
 fn main() {
-	let v = Arc::new(Mutex::new( 0 ));
-	let thread = thread::spawn( enclose!((v => my_locker) move || {
-		let mut v_lock = match my_locker.lock() {
+	let mutex_data = Arc::new(Mutex::new( 0 ));
+	let thread = thread::spawn( enclose!((mutex_data => data) move || {
+		let mut lock = match data.lock() {
 			Ok(a) => a,
 			Err(e) => e.into_inner(),
 		};
-		*v_lock += 1;
+		*lock += 1;
 	}));
 
 	thread.join().unwrap();
 	{
-		let v_lock = match v.lock() {
+		let lock = match mutex_data.lock() {
 			Ok(a) => a,
 			Err(e) => e.into_inner(),
 		};
-		assert_eq!(*v_lock, 1);
+		assert_eq!(*lock, 1);
 	}
 }
+

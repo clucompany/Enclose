@@ -7,8 +7,7 @@ use std::thread;
 use enclose::enclose;
 
 fn main() {
-
-     let v = Arc::new(Mutex::new( 0 ));
+	let v = Arc::new(Mutex::new( 0 ));
 	let v2 = Arc::new(RwLock::new( (0, 2, 3, 4) ));
 
 	let count_thread = 5;

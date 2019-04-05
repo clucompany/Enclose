@@ -23,28 +23,54 @@ A convenient macro for cloning values into a closure.
 
 # Use
 ```
-use std::thread;
+use enclose::enclose;
+
+fn main() {
+	let clone_data = 0;
+	let add_data = 100;
+	my_enclose( enclose!((mut clone_data, add_data) move || {
+		println!("#0 {:?}", clone_data);
+		clone_data += add_data;
+		println!("#1 {:?}", clone_data);
+		
+		assert_eq!(clone_data, 100);
+	}));
+	
+	assert_eq!(clone_data, 0);
+}
+
+fn my_enclose<F: FnOnce() -> R, R>(a: F) -> R {
+	a()
+}
+```
+
+# Use 1
+
+```
 use std::sync::Arc;
 use std::sync::Mutex;
+use std::thread;
 
 use enclose::enclose;
 
-let v = Arc::new(Mutex::new( 0 ));
-let thread = thread::spawn( enclose!((v) move || {
-	let mut v_lock = match v.lock() {
-		Ok(a) => a,
-		Err(e) => e.into_inner(),
-	};
-	*v_lock += 1;
-}));
+fn main() {
+	let mutex_data = Arc::new(Mutex::new( 0 ));
+	let thread = thread::spawn( enclose!((mutex_data => data) move || {
+		let mut lock = match data.lock() {
+			Ok(a) => a,
+			Err(e) => e.into_inner(),
+		};
+		*lock += 1;
+	}));
 
-thread.join().unwrap();
-{
-	let v_lock = match v.lock() {
-		Ok(a) => a,
-		Err(e) => e.into_inner(),
-	};
-	assert_eq!(*v_lock, 1);
+	thread.join().unwrap();
+	{
+		let lock = match mutex_data.lock() {
+			Ok(a) => a,
+			Err(e) => e.into_inner(),
+		};
+		assert_eq!(*lock, 1);
+	}
 }
 ```
 
@@ -123,31 +149,122 @@ thread.join().unwrap();
 ///Macro for cloning values to close.
 #[macro_export]
 macro_rules! enclose {
-	(($( $a:ident => $c:ident ),*) $b:expr ) => {{
-		$(
-			let $c = $a.clone();
-		)*
+	[( $($tt:tt)* ) $b:expr ] => {{
+		$crate::enclose_data! {
+			$( $tt )*
+		}
 
 		$b
 	}};
-	(($( $a:ident ),*) $b:expr ) => {{
-		$(
-			let $a = $a.clone();
-		)*
-
-		$b
-	}};
+	
+	[() $b: expr] => {$b};
+	[$b: expr] => {$b};
 }
 
 ///Macro for cloning values to close. Alternative short record.
 #[macro_export]
 macro_rules! enc {
-	($($tt:tt)*) => {
-		enclose!( $($tt)* )
+	[$($tt:tt)*] => {
+		$crate::enclose!{ $($tt)* }
 	};
 }
 
 
+#[doc(hidden)]
+#[macro_export]
+macro_rules! enclose_data {
+	[ *$a: ident => mut $b: ident,  $($tt:tt)*] => {
+		let mut $b = *$a;
+		
+		$crate::enclose_data!{ $($tt)* }
+	};
+	
+	[ $a: ident => mut $b: ident,  $($tt:tt)*] => {
+		let mut $b = $a.clone();
+		
+		$crate::enclose_data!{ $($tt)* }
+	};
+	
+	[ *$a: ident => $b: ident,  $($tt:tt)*] => {
+		let $b = *$a;
+		
+		$crate::enclose_data!{ $($tt)* }
+	};
+	
+	[ $a: ident => $b: ident,  $($tt:tt)*] => {
+		let $b = $a.clone();
+		
+		$crate::enclose_data!{ $($tt)* }
+	};
+	
+	[ mut *$a: ident,  $($tt:tt)*] => {
+		let mut $a = *$a;
+		
+		$crate::enclose_data!{ $($tt)* }
+	};
+	
+	[ mut $a: ident,  $($tt:tt)*] => {
+		let mut $a = $a.clone();
+		
+		$crate::enclose_data!{ $($tt)* }
+	};
+	
+	[ *$a: ident,  $($tt:tt)*] => {
+		let $a = *$a;
+		
+		$crate::enclose_data!{ $($tt)* }
+	};
+	
+	[ $a: ident,  $($tt:tt)*] => {
+		let $a = $a.clone();
+		
+		$crate::enclose_data!{ $($tt)* }
+	};
+	
+	
+	
+	//NO ,!
+	[ *$a: ident => mut $b: ident] => {
+		let mut $b = *$a;
+	};
+	
+	[ $a: ident => mut $b: ident] => {
+		let mut $b = $a.clone();
+	};
+	
+	[ *$a: ident => $b: ident] => {
+		let $b = *$a;
+	};
+	
+	[ $a: ident => $b: ident] => {
+		let $b = $a.clone();
+	};
+	
+	[ mut *$a: ident] => {
+		let $a = *$a;
+	};
+	
+	[ mut $a: ident] => {
+		let mut $a = $a.clone();
+	};
+	
+	[ *$a: ident] => {
+		let $a = *$a;
+	};
+	
+	[ $a: ident] => {
+		let $a = $a.clone();
+	};
+	
+	
+		
+	() => ()
+}
+
+
+
+
+#[cfg(feature = "std")]
 #[cfg(test)]
 mod tests {
 	use std::thread;
