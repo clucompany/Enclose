@@ -266,7 +266,6 @@ macro_rules! enclose_data {
 
 
 
-#[cfg(feature = "std")]
 #[cfg(test)]
 mod tests {
 	use std::thread;

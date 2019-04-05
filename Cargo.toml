@@ -10,6 +10,6 @@ edition = "2018"
 
 description = "A convenient macro for cloning values into a closure."
 keywords = ["enclose", "enclose_macro", "macro", "clucompany"]
-categories = ["development-tools", "no-std"]
+categories = ["development-tools"]
 
 [dependencies]
