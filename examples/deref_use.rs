@@ -6,6 +6,7 @@ use std::sync::Arc;
 fn main() {
 	let clone_data = Arc::new(0);
 	let add_data = Arc::new(100);
+	
 	my_enclose( enclose!((mut *clone_data, *add_data) move || {
 		println!("#0 {:?}", clone_data);
 		clone_data += add_data;

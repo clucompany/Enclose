@@ -7,8 +7,8 @@ use enclose::enclose;
 
 fn main() {
 	let mutex_data = Arc::new(Mutex::new( 0 ));
-	let thread = thread::spawn( enclose!((mutex_data => data) move || {
-		let mut lock = match data.lock() {
+	let thread = thread::spawn( enclose!((mutex_data => d) move || {
+		let mut lock = match d.lock() {
 			Ok(a) => a,
 			Err(e) => e.into_inner(),
 		};

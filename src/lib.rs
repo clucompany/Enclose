@@ -30,6 +30,7 @@ use enclose::enclose;
 fn main() {
 	let clone_data = 0;
 	let add_data = 100;
+	
 	my_enclose( enclose!((mut clone_data, add_data) move || {
 		println!("#0 {:?}", clone_data);
 		clone_data += add_data;
@@ -57,8 +58,8 @@ use enclose::enclose;
 
 fn main() {
 	let mutex_data = Arc::new(Mutex::new( 0 ));
-	let thread = thread::spawn( enclose!((mutex_data => data) move || {
-		let mut lock = match data.lock() {
+	let thread = thread::spawn( enclose!((mutex_data => d) move || {
+		let mut lock = match d.lock() {
 			Ok(a) => a,
 			Err(e) => e.into_inner(),
 		};
@@ -78,74 +79,88 @@ fn main() {
 
 # Use 2
 ```
-use std::thread;
+
 use std::sync::Arc;
 use std::sync::Mutex;
 use std::sync::RwLock;
+use std::thread;
 
 use enclose::enclose;
 
+fn main() {
+	let data1 = Arc::new(Mutex::new( 0 ));
+	let data2 = Arc::new(RwLock::new( (0, 2, 3, 4) ));
 
-let v = Arc::new(Mutex::new( 0 ));
-let v2 = Arc::new(RwLock::new( (0, 2, 3, 4) ));
+	let count_thread = 5;
+	let mut waits = Vec::with_capacity(count_thread);
 
-let count_thread = 5;
-let mut wait_all = Vec::with_capacity(count_thread);
+	for _a in 0..count_thread {
+		waits.push({
+			thread::spawn( enclose!((data1, data2) move || {
+				//(data1, data2) -> 
+				//let data1 = 'root.data1.clone();
+				//let data2 = 'root.data2.clone();
+				
+				let mut v_lock = match data1.lock() {
+					Ok(a) => a,
+					Err(e) => e.into_inner(),
+				};
+				*v_lock += 1;
 
-for _a in 0..count_thread {
-	wait_all.push({
-		thread::spawn( enclose!((v, v2) move || {
-			let mut v_lock = match v.lock() {
-				Ok(a) => a,
-				Err(e) => e.into_inner(),
-			};
-			*v_lock += 1;
-
-			drop( v2 ); //ignore warning
-		}))
-	});
-}
-for a in wait_all {
-	a.join().unwrap();
-}
-{	
-	//Test result
-	let v_lock = match v.lock() {
-		Ok(a) => a,
-		Err(e) => e.into_inner(),
-	};
-	assert_eq!(*v_lock, 5);
+				drop( data2 ); //ignore warning
+			}))
+		});
+	}
+	for a in waits {
+		a.join().unwrap();
+	}
+	
+	
+	{	
+		//Check data1_lock
+		let data1_lock = match data1.lock() {
+			Ok(a) => a,
+			Err(e) => e.into_inner(),
+		};
+		assert_eq!(*data1_lock, 5);
+	}
+	
+	{	
+		//Check data2_lock
+		let data2_lock = match data2.write() {
+			Ok(a) => a,
+			Err(e) => e.into_inner(),
+		};
+		assert_eq!(*data2_lock, (0, 2, 3, 4));
+	}
 }
 ```
 
 # Use 3
 
 ```
-use std::sync::Arc;
-use std::sync::Mutex;
-use std::thread;
-
 use enclose::enclose;
+use std::sync::Arc;
 
-let v = Arc::new(Mutex::new( 0 ));
-let thread = thread::spawn( enclose!((v => MY_LOCKER) move || {
-	let mut v_lock = match MY_LOCKER.lock() {
-		Ok(a) => a,
-		Err(e) => e.into_inner(),
-	};
-	*v_lock += 1;
- }));
+fn main() {
+	let clone_data = Arc::new(0);
+	let add_data = Arc::new(100);
+	
+	my_enclose( enclose!((mut *clone_data, *add_data) move || {
+		println!("#0 {:?}", clone_data);
+		clone_data += add_data;
+		println!("#1 {:?}", clone_data);
+		
+		assert_eq!(clone_data, 100);
+	}));
+	
+	assert_eq!(*clone_data, 0);
+}
 
-thread.join().unwrap();
-{
-	let v_lock = match v.lock() {
-		Ok(a) => a,
-		Err(e) => e.into_inner(),
-	};
-	assert_eq!(*v_lock, 1);
+fn my_enclose<F: FnOnce() -> R, R>(a: F) -> R {
+	a()
 }
 ```
-
 */
 
 ///Macro for cloning values to close.
@@ -259,7 +274,6 @@ macro_rules! enclose_data {
 	};
 	
 	
-		
 	() => ()
 }
 
@@ -271,80 +285,89 @@ mod tests {
 	use std::thread;
 	use std::sync::Arc;
 	use std::sync::Mutex;
+	use std::sync::MutexGuard;
 	use std::sync::RwLock;
-
-	#[test]
-	fn easy() {
-		let v = Arc::new(Mutex::new( 0 ));
-		let thread = thread::spawn( enclose!((v) move || {
-			let mut v_lock = match v.lock() {
+	
+	
+	struct MutexSafeData(Mutex<usize>);
+		
+	impl MutexSafeData {
+		#[inline]
+		pub fn new(def: usize) -> Self {
+			MutexSafeData(Mutex::new(def))	
+		}
+		pub fn set(&self, size: usize) {
+			*self.get_mut() = size;
+		}
+		pub fn get_mut<'a>(&'a self) -> MutexGuard<'a, usize> {
+			match self.0.lock() {
 				Ok(a) => a,
 				Err(e) => e.into_inner(),
-			};
-			*v_lock += 1;
+			}
+		}
+	}
+	
+	
+	#[test]
+	fn easy() {
+		let mutex_data = Arc::new(MutexSafeData::new(0));
+		let thread = thread::spawn( enclose!((mutex_data) move || { //NEW THREAD, NEW ARC!
+			//let data = data.clone();
+			
+			mutex_data.set(10);
 		}));
 
 		thread.join().unwrap();
-		{
-			let v_lock = match v.lock() {
-				Ok(a) => a,
-				Err(e) => e.into_inner(),
-			};
-			assert_eq!(*v_lock, 1);
-		}
+		assert_eq!(*mutex_data.get_mut(), 10);
 	}
 	#[test]
 	fn easy_extract() {
-		let v = Arc::new(Mutex::new( 0 ));
-		let thread = thread::spawn( enclose!((v => my_v) move || {
-			let mut v_lock = match my_v.lock() {
-				Ok(a) => a,
-				Err(e) => e.into_inner(),
-			};
-			*v_lock += 1;
+		let mutex_data = Arc::new(MutexSafeData::new(0));
+		let thread = thread::spawn( enclose!((mutex_data => new_data) move || { //NEW THREAD, NEW ARC!
+			//let data = data.clone();
+			
+			new_data.set(10);
 		}));
 
 		thread.join().unwrap();
-		{
-			let v_lock = match v.lock() {
-				Ok(a) => a,
-				Err(e) => e.into_inner(),
-			};
-			assert_eq!(*v_lock, 1);
-		}
+		assert_eq!(*mutex_data.get_mut(), 10);
 	}
 
 	#[test]
-	fn easy_2() {
-		let v = Arc::new(Mutex::new( 0 ));
+	fn easy_2name() {
+		let safe_data = Arc::new(MutexSafeData::new(0));
 		let v2 = Arc::new(RwLock::new( (0, 2, 3, 4) ));
 
 		let count_thread = 5;
-		let mut wait_all = Vec::with_capacity(count_thread);
+		let mut join_all = Vec::with_capacity(count_thread);
 
 		for _a in 0..count_thread {
-			wait_all.push({
-				thread::spawn( enclose!((v, v2) move || {
-					let mut v_lock = match v.lock() {
-						Ok(a) => a,
-						Err(e) => e.into_inner(),
-					};
-					*v_lock += 1;
+			join_all.push({
+				thread::spawn( enclose!((safe_data, v2) move || {
+					*safe_data.get_mut() += 1;
 
 					drop( v2 ); //ignore warning
 				}))
 			});
 		}
-		for a in wait_all {
+		for a in join_all {
 			a.join().unwrap();
 		}
-		{	
-			//Test result
-			let v_lock = match v.lock() {
-				Ok(a) => a,
-				Err(e) => e.into_inner(),
-			};
-			assert_eq!(*v_lock, 5);
-		}
+		assert_eq!(*safe_data.get_mut(), 5);
 	}
+	
+	#[test]
+	fn clone_mut_data() {
+		let data = 10;
+		
+		enclose!((data => mut new_data) move || {
+			//let mut new_data = data;
+			new_data += 1;
+
+			assert_eq!(new_data, 11);
+		});
+		
+		assert_eq!(data, 10);
+	}
+
 }
