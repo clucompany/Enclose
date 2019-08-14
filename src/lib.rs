@@ -163,6 +163,63 @@ fn my_enclose<F: FnOnce() -> R, R>(a: F) -> R {
 ```
 */
 
+///To create and start short circuit.
+///```rust
+///use enclose::run_enclose;
+/// 
+///#[derive(Debug, Default)]
+///struct StructData {
+///	a: i32,	
+///}
+///
+///let data = StructData::default();
+///
+///run_enclose!((data.a => mut num_data) move || {
+///	num_data += 1;
+///	assert_eq!(num_data, 1);
+///});
+///
+///
+///assert_eq!(data.a, 0);
+///```
+#[macro_export]
+macro_rules! run_enclose {
+	[$($tt:tt)*] => {{
+		let mut enclose = $crate::enclose!( $($tt)* );
+		
+		enclose()
+	}}
+}
+
+///To create and start short circuit. Alternative short record.
+///```rust
+///use enclose::run_enc;
+/// 
+///#[derive(Debug, Default)]
+///struct StructData {
+///	a: i32,	
+///}
+///
+///let data = StructData::default();
+///
+///run_enc!((data.a => mut num_data) move || {
+///	num_data += 1;
+///	assert_eq!(num_data, 1);
+///});
+///
+///
+///assert_eq!(data.a, 0);
+///```
+#[macro_export]
+macro_rules! run_enc {
+	[$($tt:tt)*] => {{
+		let mut enclose = $crate::enc!( $($tt)* );
+		
+		enclose()
+	}}
+}
+
+
 ///Macro for cloning values to close.
 #[macro_export]
 macro_rules! enclose {
@@ -190,25 +247,25 @@ macro_rules! enc {
 #[doc(hidden)]
 #[macro_export]
 macro_rules! enclose_data {
-	[ *$a: ident => mut $b: ident,  $($tt:tt)*] => {
+	[ *$a: expr => mut $b: ident,  $($tt:tt)*] => {
 		let mut $b = *$a;
 		
 		$crate::enclose_data!{ $($tt)* }
 	};
 	
-	[ $a: ident => mut $b: ident,  $($tt:tt)*] => {
+	[ $a: expr => mut $b: ident,  $($tt:tt)*] => {
 		let mut $b = $a.clone();
 		
 		$crate::enclose_data!{ $($tt)* }
 	};
 	
-	[ *$a: ident => $b: ident,  $($tt:tt)*] => {
+	[ *$a: expr => $b: ident,  $($tt:tt)*] => {
 		let $b = *$a;
 		
 		$crate::enclose_data!{ $($tt)* }
 	};
 	
-	[ $a: ident => $b: ident,  $($tt:tt)*] => {
+	[ $a: expr => $b: ident,  $($tt:tt)*] => {
 		let $b = $a.clone();
 		
 		$crate::enclose_data!{ $($tt)* }
@@ -241,19 +298,19 @@ macro_rules! enclose_data {
 	
 	
 	//NO ,!
-	[ *$a: ident => mut $b: ident] => {
+	[ *$a: expr => mut $b: ident] => {
 		let mut $b = *$a;
 	};
 	
-	[ $a: ident => mut $b: ident] => {
+	[ $a: expr => mut $b: ident] => {
 		let mut $b = $a.clone();
 	};
 	
-	[ *$a: ident => $b: ident] => {
+	[ *$a: expr => $b: ident] => {
 		let $b = *$a;
 	};
 	
-	[ $a: ident => $b: ident] => {
+	[ $a: expr => $b: ident] => {
 		let $b = $a.clone();
 	};
 	
@@ -360,14 +417,32 @@ mod tests {
 	fn clone_mut_data() {
 		let data = 10;
 		
-		enclose!((data => mut new_data) move || {
+		run_enclose!((data => mut new_data) move || {
 			//let mut new_data = data;
 			new_data += 1;
-
+			
 			assert_eq!(new_data, 11);
 		});
 		
 		assert_eq!(data, 10);
 	}
-
+	
+	#[test]
+	fn appeal_data() {
+		#[derive(Debug, Default)]
+		struct StructData {
+			a: i32,	
+		}
+		
+		let data = StructData::default();
+		
+		run_enclose!((data.a => mut num_data) move || {
+			num_data += 1;
+			assert_eq!(num_data, 1);
+		});
+		
+		
+		assert_eq!(data.a, 0);
+	}
+	
 }
