@@ -185,6 +185,7 @@ fn my_enclose<F: FnOnce() -> R, R>(a: F) -> R {
 #[macro_export]
 macro_rules! run_enclose {
 	[$($tt:tt)*] => {{
+		#[allow(unused_mut)]
 		let mut enclose = $crate::enclose!( $($tt)* );
 		
 		enclose()
@@ -223,16 +224,63 @@ macro_rules! run_enc {
 ///Macro for cloning values to close.
 #[macro_export]
 macro_rules! enclose {
-	[( $($tt:tt)* ) $b:expr ] => {{
+	/*[( $($tt:tt)* ) $b:expr ] => {{
 		$crate::enclose_data! {
 			$( $tt )*
 		}
 
 		$b
+	}};*/
+	//old.
+	
+	
+	[( $($d_tt:tt)* ) move || {$($b:tt)*} ] => {{	
+		$crate::enclose_data! {
+			$( $d_tt )*
+		}
+		move || {
+			$($b)*
+		}
 	}};
 	
-	[() $b: expr] => {$b};
-	[$b: expr] => {$b};
+
+	[( $($d_tt:tt)* ) || {$($b:tt)*} ] => {{
+		|| {
+			$crate::enclose_data! {
+				$( $d_tt )*
+			}
+			
+			$($b)*
+		}
+	}};
+	
+	
+	[( $($d_tt:tt)* ) move |$($all_data:ident),*| {$($b:tt)*} ] => {{	
+		$crate::enclose_data! {
+			$( $d_tt )*
+		}
+		move |$($all_data)*| {
+			$($b)*
+		}
+	}};
+	
+
+	[( $($d_tt:tt)* ) |$($all_data:ident),*| {$($b:tt)*} ] => {{
+		|$($all_data)*| {
+			$crate::enclose_data! {
+				$( $d_tt )*
+			}
+			
+			$($b)*
+		}
+	}};
+	//Experimental opportunity...
+	//Maybe not needed...
+	
+	
+	() => ()
+	/*[() $b: expr] => {$b};
+	[$b: expr] => {$b};*/
 }
 
 ///Macro for cloning values to close. Alternative short record.
@@ -417,7 +465,7 @@ mod tests {
 	fn clone_mut_data() {
 		let data = 10;
 		
-		run_enclose!((data => mut new_data) move || {
+		run_enclose!((data => mut new_data) || {
 			//let mut new_data = data;
 			new_data += 1;
 			
@@ -434,15 +482,69 @@ mod tests {
 			a: i32,	
 		}
 		
+		impl StructData {
+			fn run_closure<F: Fn(i32)>(&self, f: F) {
+				f(0)
+			}
+		}
+		
 		let data = StructData::default();
 		
-		run_enclose!((data.a => mut num_data) move || {
+		data.run_closure(enclose!((data.a => mut num_data) |num| {
 			num_data += 1;
+			num_data += num;
 			assert_eq!(num_data, 1);
-		});
+		}));
 		
 		
 		assert_eq!(data.a, 0);
 	}
 	
+	
+	#[test]
+	fn check_copy_clone_operations() {		
+		static mut CHECK_COPY_CLONE_OPERATIONS: u32 = 0;
+		
+		#[derive(Debug)]
+		struct AlwaysClone;
+
+		impl Clone for AlwaysClone {
+			#[inline]
+			fn clone(&self) -> Self {
+				unsafe { 
+					CHECK_COPY_CLONE_OPERATIONS += 1; 
+				}
+				AlwaysClone
+			}
+		}
+		
+		impl Copy for AlwaysClone {}
+		
+		let data = AlwaysClone;
+		
+		
+		assert_eq!(unsafe{ CHECK_COPY_CLONE_OPERATIONS }, 0); //Checking the number of operations
+		run_enclose!((data => d) || {
+			assert_eq!(unsafe{ CHECK_COPY_CLONE_OPERATIONS }, 1); //Checking the number of operations
+			
+			std::thread::spawn(enclose!((d) move || {
+				assert_eq!(unsafe{ CHECK_COPY_CLONE_OPERATIONS }, 2); //Checking the number of operations
+				
+				run_enclose!((d) || {
+					run_enclose!((d => _d) move || {
+							
+					});
+				});
+				assert_eq!(unsafe{ CHECK_COPY_CLONE_OPERATIONS }, 4); //Checking the number of operations
+				
+				
+			})).join().unwrap();
+			
+		});
+		
+				
+		//Checking the number of operations,
+		//Closure = 2
+		assert_eq!(unsafe { CHECK_COPY_CLONE_OPERATIONS }, 4);
+	}
 }

@@ -6,7 +6,7 @@ fn main() {
 	let clone_data = 0;
 	let add_data = 100;
 	
-	my_enclose( enclose!((mut clone_data, add_data) move || {
+	my_enclose( enclose!((mut clone_data, add_data) || {
 		println!("#0 {:?}", clone_data);
 		clone_data += add_data;
 		println!("#1 {:?}", clone_data);
