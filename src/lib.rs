@@ -31,7 +31,7 @@ fn main() {
 	let clone_data = 0;
 	let add_data = 100;
 	
-	my_enclose( enclose!((mut clone_data, add_data) move || {
+	my_enclose( enclose!((mut clone_data, add_data) || {
 		println!("#0 {:?}", clone_data);
 		clone_data += add_data;
 		println!("#1 {:?}", clone_data);
@@ -146,7 +146,7 @@ fn main() {
 	let clone_data = Arc::new(0);
 	let add_data = Arc::new(100);
 	
-	my_enclose( enclose!((mut *clone_data, *add_data) move || {
+	my_enclose( enclose!((mut *clone_data, *add_data) || {
 		println!("#0 {:?}", clone_data);
 		clone_data += add_data;
 		println!("#1 {:?}", clone_data);
@@ -174,7 +174,7 @@ fn my_enclose<F: FnOnce() -> R, R>(a: F) -> R {
 ///
 ///let data = StructData::default();
 ///
-///run_enclose!((data.a => mut num_data) move || {
+///run_enclose!((data.a => mut num_data) || {
 ///	num_data += 1;
 ///	assert_eq!(num_data, 1);
 ///});
@@ -203,7 +203,7 @@ macro_rules! run_enclose {
 ///
 ///let data = StructData::default();
 ///
-///run_enc!((data.a => mut num_data) move || {
+///run_enc!((data.a => mut num_data) || {
 ///	num_data += 1;
 ///	assert_eq!(num_data, 1);
 ///});
@@ -483,7 +483,7 @@ mod tests {
 		}
 		
 		impl StructData {
-			fn run_closure<F: Fn(i32)>(&self, f: F) {
+			fn run_closure<F: FnOnce(i32)>(&self, f: F) {
 				f(0)
 			}
 		}
@@ -531,8 +531,8 @@ mod tests {
 				assert_eq!(unsafe{ CHECK_COPY_CLONE_OPERATIONS }, 2); //Checking the number of operations
 				
 				run_enclose!((d) || {
-					run_enclose!((d => _d) move || {
-							
+					run_enclose!((d => _d) move || { //'Move 'is not mandatory here, but since the semantics of the macro are different, we will leave it here for tests.
+						
 					});
 				});
 				assert_eq!(unsafe{ CHECK_COPY_CLONE_OPERATIONS }, 4); //Checking the number of operations
