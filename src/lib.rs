@@ -511,9 +511,8 @@ mod tests {
 		impl Clone for AlwaysClone {
 			#[inline]
 			fn clone(&self) -> Self {
-				unsafe { 
-					CHECK_COPY_CLONE_OPERATIONS += 1; 
-				}
+				unsafe{ CHECK_COPY_CLONE_OPERATIONS += 1; }
+				
 				AlwaysClone
 			}
 		}
