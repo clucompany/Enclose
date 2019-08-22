@@ -255,18 +255,18 @@ macro_rules! enclose {
 	}};
 	
 	
-	[( $($d_tt:tt)* ) move |$($all_data:ident),*| {$($b:tt)*} ] => {{	
+	[( $($d_tt:tt)* ) move |$( $all_data:tt ),*| {$($b:tt)*} ] => {{	
 		$crate::enclose_data! {
 			$( $d_tt )*
 		}
-		move |$($all_data)*| {
+		move |$($all_data),*| {
 			$($b)*
 		}
 	}};
 	
 
-	[( $($d_tt:tt)* ) |$($all_data:ident),*| {$($b:tt)*} ] => {{
-		|$($all_data)*| {
+	[( $($d_tt:tt)* ) |$( $all_data:tt ),*| {$($b:tt)*} ] => {{
+		|$( $all_data ),*| {
 			$crate::enclose_data! {
 				$( $d_tt )*
 			}
@@ -399,7 +399,7 @@ mod tests {
 	impl MutexSafeData {
 		#[inline]
 		pub fn new(def: usize) -> Self {
-			MutexSafeData(Mutex::new(def))	
+			MutexSafeData(Mutex::new(def))
 		}
 		pub fn set(&self, size: usize) {
 			*self.get_mut() = size;
@@ -483,14 +483,14 @@ mod tests {
 		}
 		
 		impl StructData {
-			fn run_closure<F: FnOnce(i32)>(&self, f: F) {
-				f(0)
+			fn run_closure<F: FnOnce(u64, i32)>(&self, f: F) {
+				f(0, 0)
 			}
 		}
 		
 		let data = StructData::default();
 		
-		data.run_closure(enclose!((data.a => mut num_data) |num| {
+		data.run_closure(enclose!((data.a => mut num_data) |_, num| {
 			num_data += 1;
 			num_data += num;
 			assert_eq!(num_data, 1);
