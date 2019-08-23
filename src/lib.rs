@@ -224,15 +224,23 @@ macro_rules! run_enc {
 ///Macro for cloning values to close.
 #[macro_export]
 macro_rules! enclose {
-	[@raw ( $($tt:tt)* ) $b:expr ] => {{
+	[@deprecated ( $($tt:tt)* ) $b:expr ] => {{
 		$crate::enclose_data! {
 			$( $tt )*
 		}
 
 		$b
 	}};
-	//old.
+	//deprecated method.
 	
+	[@!prev ( $($d_tt:tt)* ) move || $($b:tt)* ] => {{	
+		move || {
+			$crate::enclose_data! {
+				$( $d_tt )*
+			}
+			$($b)*	
+		}
+	}};
 	
 	[( $($d_tt:tt)* ) move || $($b:tt)* ] => {{	
 		$crate::enclose_data! {
@@ -241,6 +249,13 @@ macro_rules! enclose {
 		move || $($b)*
 	}};
 	
+	
+	[@prev ( $($d_tt:tt)* ) || $($b:tt)* ] => {{
+		$crate::enclose_data! {
+			$( $d_tt )*
+		}
+		|| $($b)*
+	}};
 
 	[( $($d_tt:tt)* ) || $($b:tt)* ] => {{
 		|| {
@@ -251,7 +266,17 @@ macro_rules! enclose {
 			$($b)*
 		}
 	}};
+	//end, empty enclose
 	
+	[@!prev ( $($d_tt:tt)* ) move |$( $all_data:tt ),*| $($b:tt)* ] => {{
+		move |$($all_data),*| {
+			$crate::enclose_data! {
+				$( $d_tt )*
+			}
+			
+			$($b)*	
+		}
+	}};
 	
 	[( $($d_tt:tt)* ) move |$( $all_data:tt ),*| $($b:tt)* ] => {{
 		$crate::enclose_data! {
@@ -260,7 +285,14 @@ macro_rules! enclose {
 		move |$($all_data),*| $($b)*
 	}};
 	
-
+	
+	[@prev ( $($d_tt:tt)* ) |$( $all_data:tt ),*| $($b:tt)* ] => {{
+		$crate::enclose_data! {
+			$( $d_tt )*
+		}
+		|$( $all_data ),*| $($b)*
+	}};
+	
 	[( $($d_tt:tt)* ) |$( $all_data:tt ),*| $($b:tt)* ] => {{
 		|$( $all_data ),*| {
 			$crate::enclose_data! {
