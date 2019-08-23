@@ -31,7 +31,7 @@ impl CheckData {
 	pub fn calculate(&self, mul_num: &u32) -> u32 {
 		//let mut num0 = self.a.clone();
 		//let mul_num = *mul_num; //analog, enclose!((edit_view, self.gestures.drag_data => drag_data) move |_, start_x, start_y| {
-		run_enclose!((*mul_num, self.a => mut num0) move || {
+		run_enclose!((*mul_num, self.a => mut num0) || {
 			num0 *= mul_num;
 			num0 += 1024;
 			

@@ -224,27 +224,25 @@ macro_rules! run_enc {
 ///Macro for cloning values to close.
 #[macro_export]
 macro_rules! enclose {
-	/*[( $($tt:tt)* ) $b:expr ] => {{
+	[@raw ( $($tt:tt)* ) $b:expr ] => {{
 		$crate::enclose_data! {
 			$( $tt )*
 		}
 
 		$b
-	}};*/
+	}};
 	//old.
 	
 	
-	[( $($d_tt:tt)* ) move || {$($b:tt)*} ] => {{	
+	[( $($d_tt:tt)* ) move || $($b:tt)* ] => {{	
 		$crate::enclose_data! {
 			$( $d_tt )*
 		}
-		move || {
-			$($b)*
-		}
+		move || $($b)*
 	}};
 	
 
-	[( $($d_tt:tt)* ) || {$($b:tt)*} ] => {{
+	[( $($d_tt:tt)* ) || $($b:tt)* ] => {{
 		|| {
 			$crate::enclose_data! {
 				$( $d_tt )*
@@ -255,17 +253,15 @@ macro_rules! enclose {
 	}};
 	
 	
-	[( $($d_tt:tt)* ) move |$( $all_data:tt ),*| {$($b:tt)*} ] => {{	
+	[( $($d_tt:tt)* ) move |$( $all_data:tt ),*| $($b:tt)* ] => {{
 		$crate::enclose_data! {
 			$( $d_tt )*
 		}
-		move |$($all_data),*| {
-			$($b)*
-		}
+		move |$($all_data),*| $($b)*
 	}};
 	
 
-	[( $($d_tt:tt)* ) |$( $all_data:tt ),*| {$($b:tt)*} ] => {{
+	[( $($d_tt:tt)* ) |$( $all_data:tt ),*| $($b:tt)* ] => {{
 		|$( $all_data ),*| {
 			$crate::enclose_data! {
 				$( $d_tt )*
@@ -275,12 +271,24 @@ macro_rules! enclose {
 		}
 	}};
 	//Experimental opportunity...
-	//Maybe not needed...
+	//Maybe not neemoveded...
+	
+	
+	/*
+		data.run_closure2(
+			enclose!(() StructData::null_fn)
+		);
+	*/
+	[( $($d_tt:tt)* ) $($b:tt)* ] => {{
+		$crate::enclose_data! {
+			$( $d_tt )*
+		}
+		
+		$($b)*
+	}};
 	
 	
 	() => ()
-	/*[() $b: expr] => {$b};
-	[$b: expr] => {$b};*/
 }
 
 ///Macro for cloning values to close. Alternative short record.
@@ -486,6 +494,12 @@ mod tests {
 			fn run_closure<F: FnOnce(u64, i32)>(&self, f: F) {
 				f(0, 0)
 			}
+			
+			fn run_closure2<F: Fn(u64, i32)>(&self, f: F) {
+				f(0,0)
+			}
+			
+			fn null_fn(_a: u64, _b: i32) {}
 		}
 		
 		let data = StructData::default();
@@ -496,6 +510,19 @@ mod tests {
 			assert_eq!(num_data, 1);
 		}));
 		
+		data.run_closure(enclose!((data.a => mut num_data) move |_, num| {
+			num_data += 1;
+			num_data += num;
+			assert_eq!(num_data, 1);
+		}));
+		
+		run_enclose!(
+			(data.a => _a) || StructData::null_fn
+		);
+		
+		data.run_closure2(
+			enclose!(() StructData::null_fn)
+		);
 		
 		assert_eq!(data.a, 0);
 	}
