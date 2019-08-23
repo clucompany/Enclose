@@ -302,8 +302,6 @@ macro_rules! enclose {
 			$($b)*
 		}
 	}};
-	//Experimental opportunity...
-	//Maybe not neemoveded...
 	
 	
 	/*
