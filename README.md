@@ -8,8 +8,7 @@ A convenient macro for cloning values into a closure.
 
 
 # Use
-
-```rust
+```
 use enclose::enclose;
 
 fn main() {
@@ -17,6 +16,10 @@ fn main() {
 	let add_data = 100;
 	
 	my_enclose( enclose!((mut clone_data, add_data) || {
+		// (mut clone_data, add_data) ->
+		// let mut clone_data = clone_data.clone();
+		// let add_data = add_data.clone();
+		
 		println!("#0 {:?}", clone_data);
 		clone_data += add_data;
 		println!("#1 {:?}", clone_data);
@@ -34,7 +37,7 @@ fn my_enclose<F: FnOnce() -> R, R>(a: F) -> R {
 
 # Use 1
 
-```rust
+```
 use std::sync::Arc;
 use std::sync::Mutex;
 use std::thread;
@@ -44,6 +47,9 @@ use enclose::enclose;
 fn main() {
 	let mutex_data = Arc::new(Mutex::new( 0 ));
 	let thread = thread::spawn( enclose!((mutex_data => d) move || {
+		// (mutex_data => d) ->
+		// let d = mutex_data.clone();
+		
 		let mut lock = match d.lock() {
 			Ok(a) => a,
 			Err(e) => e.into_inner(),
@@ -63,8 +69,8 @@ fn main() {
 ```
 
 # Use 2
+```
 
-```rust
 use std::sync::Arc;
 use std::sync::Mutex;
 use std::sync::RwLock;
@@ -82,9 +88,9 @@ fn main() {
 	for _a in 0..count_thread {
 		waits.push({
 			thread::spawn( enclose!((data1, data2) move || {
-				//(data1, data2) -> 
-				//let data1 = 'root.data1.clone();
-				//let data2 = 'root.data2.clone();
+				// (data1, data2) -> 
+				// let data1 = data1.clone();
+				// let data2 = data2.clone();
 				
 				let mut v_lock = match data1.lock() {
 					Ok(a) => a,
@@ -92,7 +98,7 @@ fn main() {
 				};
 				*v_lock += 1;
 
-				drop( data2 ); //ignore warning
+				drop( data2 ); // ignore warning
 			}))
 		});
 	}
@@ -102,7 +108,7 @@ fn main() {
 	
 	
 	{	
-		//Check data1_lock
+		// Check data1_lock
 		let data1_lock = match data1.lock() {
 			Ok(a) => a,
 			Err(e) => e.into_inner(),
@@ -111,7 +117,7 @@ fn main() {
 	}
 	
 	{	
-		//Check data2_lock
+		// Check data2_lock
 		let data2_lock = match data2.write() {
 			Ok(a) => a,
 			Err(e) => e.into_inner(),
@@ -123,7 +129,7 @@ fn main() {
 
 # Use 3
 
-```rust
+```
 use enclose::enclose;
 use std::sync::Arc;
 
@@ -132,6 +138,10 @@ fn main() {
 	let add_data = Arc::new(100);
 	
 	my_enclose( enclose!((mut *clone_data, *add_data) || {
+		// (mut *clone_data, *add_data)
+		// let mut clone_data = *clone_data;
+		// let add_data = *add_data;
+		
 		println!("#0 {:?}", clone_data);
 		clone_data += add_data;
 		println!("#1 {:?}", clone_data);
