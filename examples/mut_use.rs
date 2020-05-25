@@ -1,5 +1,4 @@
 
-
 use enclose::enclose;
 
 fn main() {
@@ -7,6 +6,10 @@ fn main() {
 	let add_data = 100;
 	
 	my_enclose( enclose!((mut clone_data, add_data) || {
+		// (mut clone_data, add_data) ->
+		// let mut clone_data = clone_data.clone();
+		// let add_data = add_data.clone();
+		
 		println!("#0 {:?}", clone_data);
 		clone_data += add_data;
 		println!("#1 {:?}", clone_data);

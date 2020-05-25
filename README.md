@@ -149,6 +149,6 @@ fn my_enclose<F: FnOnce() -> R, R>(a: F) -> R {
 
 # License
 
-Copyright 2019 #UlinProject (Denis Kotlyarov) Денис Котляров
+Copyright 2019-2020 #UlinProject (Denis Kotlyarov) Денис Котляров
 
 Licensed under the MIT License

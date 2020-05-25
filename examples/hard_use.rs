@@ -16,9 +16,9 @@ fn main() {
 	for _a in 0..count_thread {
 		waits.push({
 			thread::spawn( enclose!((data1, data2) move || {
-				//(data1, data2) -> 
-				//let data1 = 'root.data1.clone();
-				//let data2 = 'root.data2.clone();
+				// (data1, data2) -> 
+				// let data1 = 'root.data1.clone();
+				// let data2 = 'root.data2.clone();
 				
 				let mut v_lock = match data1.lock() {
 					Ok(a) => a,
@@ -26,7 +26,7 @@ fn main() {
 				};
 				*v_lock += 1;
 
-				drop( data2 ); //ignore warning
+				drop( data2 ); // ignore warning
 			}))
 		});
 	}
@@ -36,7 +36,7 @@ fn main() {
 	
 	
 	{	
-		//Check data1_lock
+		// Check data1_lock
 		let data1_lock = match data1.lock() {
 			Ok(a) => a,
 			Err(e) => e.into_inner(),
@@ -45,7 +45,7 @@ fn main() {
 	}
 	
 	{	
-		//Check data2_lock
+		// Check data2_lock
 		let data2_lock = match data2.write() {
 			Ok(a) => a,
 			Err(e) => e.into_inner(),

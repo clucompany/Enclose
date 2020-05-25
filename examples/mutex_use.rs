@@ -10,6 +10,10 @@ fn main() {
 	let right_data = Arc::new(1);
 	
 	let thread = thread::spawn( enclose!((mutex_left_data, right_data) move || {
+		// (mutex_left_data, right_data) ->
+		// let mutex_left_data = mutex_left_data.clone();
+		// let right_data = right_data.clone();
+		
 		let mut lock = match mutex_left_data.lock() {
 			Ok(a) => a,
 			Err(e) => e.into_inner(),

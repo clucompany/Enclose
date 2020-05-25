@@ -9,9 +9,9 @@ error: no rules expected the token `.`
 
 */
 
-//thank!
-//14.08.2019 13:48 Minsk/Europe UTC+03:00
-//UlinKot 1819
+// thank!
+// 14.08.2019 13:48 Minsk/Europe UTC+03:00
+// UlinKot 1819
 
 use enclose::run_enclose;
 
@@ -29,8 +29,8 @@ impl CheckData {
 	}
 	
 	pub fn calculate(&self, mul_num: &u32) -> u32 {
-		//let mut num0 = self.a.clone();
-		//let mul_num = *mul_num; //analog, enclose!((edit_view, self.gestures.drag_data => drag_data) move |_, start_x, start_y| {
+		// let mut num0 = self.a.clone();
+		// let mul_num = *mul_num; //analog, enclose!((edit_view, self.gestures.drag_data => drag_data) move |_, start_x, start_y| {
 		run_enclose!((*mul_num, self.a => mut num0) move || {
 			num0 *= mul_num;
 			num0 += 1024;
@@ -38,24 +38,22 @@ impl CheckData {
 			num0
 		})
 		
-		//run_enclose
+		// run_enclose
 		//
-		//let mut enclose = $crate::enclose!( $($tt)* );
-		//enclose()
+		// let mut enclose = $crate::enclose!( $($tt)* );
+		// enclose()
 	}
 }
 
 fn main() {
 	let data = CheckData::new(1024);
 	
-	
 	let calculate = data.calculate(&2);
-	//(data.a * 2) + 1024
+	// (data.a * 2) + 1024
 	assert_eq!(calculate, 3072);
 	
-	//check data
+	// check data
 	assert_eq!(data.a, 1024);
-	
 	
 	println!("#0 {:?}", data);
 	println!("#! calculate: {}", calculate);
