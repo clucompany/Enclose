@@ -7,7 +7,7 @@ A convenient macro for cloning values into a closure.
 [![Documentation](https://docs.rs/enclose/badge.svg)](https://docs.rs/enclose)
 
 
-# Use
+### Use
 ```rust
 use enclose::enclose;
 
@@ -35,7 +35,7 @@ fn my_enclose<F: FnOnce() -> R, R>(a: F) -> R {
 }
 ```
 
-# Use 1
+### Use 1
 
 ```rust
 use std::sync::Arc;
@@ -68,7 +68,7 @@ fn main() {
 }
 ```
 
-# Use 2
+### Use 2
 
 ```rust
 use std::sync::Arc;
@@ -127,7 +127,7 @@ fn main() {
 }
 ```
 
-# Use 3
+### Use 3
 
 ```rust
 use enclose::enclose;
@@ -157,7 +157,7 @@ fn my_enclose<F: FnOnce() -> R, R>(a: F) -> R {
 }
 ```
 
-# License
+### License
 
 Copyright 2019-2020 #UlinProject (Denis Kotlyarov) Денис Котляров
 
