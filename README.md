@@ -7,7 +7,10 @@ A convenient macro for cloning values into a closure.
 [![Documentation](https://docs.rs/enclose/badge.svg)](https://docs.rs/enclose)
 
 
-### Use
+### EasyUse
+
+Just use it!
+
 ```rust
 use enclose::enclose;
 
@@ -35,7 +38,9 @@ fn my_enclose<F: FnOnce() -> R, R>(a: F) -> R {
 }
 ```
 
-### Use 1
+### MutexUse
+
+Creating closures for a multi-threaded environment, no extra lines!
 
 ```rust
 use std::sync::Arc;
@@ -68,7 +73,9 @@ fn main() {
 }
 ```
 
-### Use 2
+### ArcMutexUse
+
+A more complex example of using an enclose macro in a multi-threaded environment.
 
 ```rust
 use std::sync::Arc;
@@ -127,7 +134,9 @@ fn main() {
 }
 ```
 
-### Use 3
+### EasyCopy
+
+Using copy instead of clone.
 
 ```rust
 use enclose::enclose;
