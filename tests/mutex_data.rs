@@ -1,8 +1,4 @@
-
-#[macro_use]
-extern crate enclose;
-extern crate std;
-
+use enclose::enclose;
 use std::sync::MutexGuard;
 use std::sync::Mutex;
 use std::sync::Arc;

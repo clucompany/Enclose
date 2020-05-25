@@ -1,5 +1,4 @@
-#[macro_use]
-extern crate enclose;
+use enclose::run_enclose;
 
 #[test]
 fn clone_mut_data() {
@@ -9,6 +8,7 @@ fn clone_mut_data() {
 	run_enclose!((data => mut new_data, data2 => mut new_data2, data2 => new_data22) || {
 		//let mut new_data = data.clone();
 		//let mut new_data2 = data2.clone();
+		//let mut new_data22 = data2.clone();
 		
 		new_data += 1;
 		new_data2 += 1;

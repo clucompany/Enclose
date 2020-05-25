@@ -1,5 +1,5 @@
-#[macro_use]
-extern crate enclose;
+use enclose::enclose;
+use enclose::run_enclose;
 
 #[test]
 fn check_copy_clone_operations() {
