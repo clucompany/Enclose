@@ -8,7 +8,7 @@ A convenient macro for cloning values into a closure.
 
 
 # Use
-```
+```rust
 use enclose::enclose;
 
 fn main() {
@@ -37,7 +37,7 @@ fn my_enclose<F: FnOnce() -> R, R>(a: F) -> R {
 
 # Use 1
 
-```
+```rust
 use std::sync::Arc;
 use std::sync::Mutex;
 use std::thread;
@@ -69,8 +69,8 @@ fn main() {
 ```
 
 # Use 2
-```
 
+```rust
 use std::sync::Arc;
 use std::sync::Mutex;
 use std::sync::RwLock;
@@ -129,7 +129,7 @@ fn main() {
 
 # Use 3
 
-```
+```rust
 use enclose::enclose;
 use std::sync::Arc;
 
