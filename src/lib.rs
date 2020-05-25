@@ -24,8 +24,11 @@
 /*!
 A convenient macro for cloning values into a closure.
 
-# Use
-```
+### EasyUse
+
+Just use it!
+
+```rust
 use enclose::enclose;
 
 fn main() {
@@ -52,9 +55,11 @@ fn my_enclose<F: FnOnce() -> R, R>(a: F) -> R {
 }
 ```
 
-# Use 1
+### MutexUse
 
-```
+Creating closures for a multi-threaded environment, no extra lines!
+
+```rust
 use std::sync::Arc;
 use std::sync::Mutex;
 use std::thread;
@@ -85,9 +90,11 @@ fn main() {
 }
 ```
 
-# Use 2
-```
+### ArcMutexUse
 
+A more complex example of using an enclose macro in a multi-threaded environment.
+
+```rust
 use std::sync::Arc;
 use std::sync::Mutex;
 use std::sync::RwLock;
@@ -144,9 +151,11 @@ fn main() {
 }
 ```
 
-# Use 3
+### EasyCopy
 
-```
+Using copy instead of clone.
+
+```rust
 use enclose::enclose;
 use std::sync::Arc;
 
@@ -173,6 +182,13 @@ fn my_enclose<F: FnOnce() -> R, R>(a: F) -> R {
 	a()
 }
 ```
+
+### License
+
+Copyright 2019-2020 #UlinProject (Denis Kotlyarov) Денис Котляров
+
+Licensed under the MIT License
+
 */
 
 #![no_std]
