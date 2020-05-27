@@ -4,20 +4,20 @@
 #[macro_export]
 macro_rules! enclose_var {
 	// copy operation
-	[ *$a: expr => mut $b: ident
+	[ *$a: expr => mut $b: ident $(: $ty:ty)?
 		$(, $($tt:tt)+ )?
 	] => {
-		let mut $b = *$a;
+		let mut $b $(: $ty)? = *$a;
 		
 		$( $crate::enclose_var! {
 			$($tt)+
 		})?
 	};
 	
-	[ *$a: expr => $b: ident
+	[ *$a: expr => $b: ident $(: $ty:ty)?
 		$(, $($tt:tt)+)?
 	] => {
-		let $b = *$a;
+		let $b $(: $ty)? = *$a;
 		
 		$( $crate::enclose_var! {
 			$($tt)+
@@ -26,19 +26,19 @@ macro_rules! enclose_var {
 	//
 	
 	// ignore clone
-	[ @$a: expr => mut $b: ident
+	[ @$a: expr => mut $b: ident $(: $ty:ty)?
 		$(, $($tt:tt)+ )?
 	] => {
-		let mut $b = $a;
+		let mut $b $(: $ty)? = $a;
 		
 		$( $crate::enclose_var! {
 			$($tt)+
 		})?
 	};
-	[ @$a: expr => $b: ident
+	[ @$a: expr => $b: ident $(: $ty:ty)?
 		$(, $($tt:tt)+)?
 	] => {
-		let $b = $a;
+		let $b $(: $ty)? = $a;
 		
 		$( $crate::enclose_var! {
 			$($tt)+
@@ -46,19 +46,19 @@ macro_rules! enclose_var {
 	};
 	//
 	
-	[ $a: expr => mut $b: ident
+	[ $a: expr => mut $b: ident $(: $ty:ty)?
 		$(, $($tt:tt)+ )?
 	] => {
-		let mut $b = $a.clone();
+		let mut $b $(: $ty)? = $a.clone();
 		
 		$( $crate::enclose_var! {
 			$($tt)+
 		})?
 	};
-	[ $a: expr => $b: ident
+	[ $a: expr => $b: ident $(: $ty:ty)?
 		$(, $($tt:tt)+)?
 	] => {
-		let $b = $a.clone();
+		let $b $(: $ty)? = $a.clone();
 		
 		$( $crate::enclose_var! {
 			$($tt)+
@@ -67,19 +67,19 @@ macro_rules! enclose_var {
 	
 
 	
-	[ mut *$a: ident
+	[ mut *$a: ident $(: $ty:ty)?
 		$(, $($tt:tt)+)?
 	] => {
-		let mut $a = *$a;
+		let mut $a $(: $ty)? = *$a;
 		
 		$( $crate::enclose_var! {
 			$($tt)+ 
 		})?
 	};
-	[ *$a: ident
+	[ *$a: ident $(: $ty:ty)?
 		$(, $($tt:tt)+)?
 	] => {
-		let $a = *$a;
+		let $a $(: $ty)? = *$a;
 		
 		$( $crate::enclose_var! {
 			$($tt)+
@@ -88,19 +88,19 @@ macro_rules! enclose_var {
 	
 	
 	
-	[ mut $a: ident
+	[ mut $a: ident $(: $ty:ty)?
 		$(, $($tt:tt)+)?
 	] => {
-		let mut $a = $a.clone();
+		let mut $a $(: $ty)? = $a.clone();
 		
 		$( $crate::enclose_var! {
 			$($tt)+
 		})?
 	};
-	[ $a: ident
+	[ $a: ident $(: $ty:ty)?
 		$(, $($tt:tt)+)?
 	] => {
-		let $a = $a.clone();
+		let $a $(: $ty)? = $a.clone();
 		
 		$( $crate::enclose_var! {
 			$($tt)+
