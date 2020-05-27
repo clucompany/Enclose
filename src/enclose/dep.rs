@@ -2,12 +2,12 @@
 /// The old 'enclose' macro behavior is left only to support backward compatibility and to support some specific cases of the old initialization behavior.
 #[macro_export]
 macro_rules! enclose_dep {
-	[ ( $($enc_args:tt)* ) $b:expr ] => {{
+	[ ( $($enc_args:tt)* ) $($b:expr)? ] => {{
 		$crate::enclose_var! {
 			$( $enc_args )*
 		}
 
-		$b
+		$($b)?
 	}};
 	
 	[ $($unk:tt)* ] => {

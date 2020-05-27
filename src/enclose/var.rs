@@ -107,10 +107,8 @@ macro_rules! enclose_var {
 		})?
 	};
 	
-	
+	[] => {};
 	[ $($unk:tt)* ] => {
 		compile_error!("Undefined entry or unsupported arguments, please double-check the input.");
 	};
-	
-	() => ()
 }

@@ -20,6 +20,7 @@ fn main() {
 	assert_eq!(clone_data, 0);
 }
 
+#[inline]
 fn my_enclose<F: FnOnce() -> R, R>(a: F) -> R {
 	a()
 }

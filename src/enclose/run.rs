@@ -59,6 +59,8 @@ macro_rules! run_enclose {
 		
 		enclose()
 	}};
+	
+	[] => {};
 	[$($tt:tt)*] => {{
 		#[allow(unused_mut)]
 		let mut enclose = $crate::enclose!( $($tt)* );

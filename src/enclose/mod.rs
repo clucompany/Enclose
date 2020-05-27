@@ -107,11 +107,16 @@ macro_rules! enclose {
 		$p :: $($all)*
 	}};
 	
+	[( $($enc_args:tt)* )] => {{ // empty
+		$crate::enclose_var! {
+			$( $enc_args )*
+		}
+	}};
+	
+	[] => {};
 	[ $($unk:tt)* ] => {
 		compile_error!("Undefined entry or unsupported arguments, please double-check input.");
 	};
-	
-	() => ()
 }
 
 ///Macro for cloning values to close. Alternative short record.
