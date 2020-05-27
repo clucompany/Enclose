@@ -11,17 +11,17 @@ pub use self::var::*;
 #[macro_export]
 macro_rules! enclose {
 	// deprecated method.
-	[@deprecated ( $($enc_args:tt)* ) $b:expr ] => {{
-		#![deprecated = "Use 'enclose_dep' with the same parameters."]
+	[@deprecated $($all:tt)* ] => {{
+		#[deprecated = "Use 'enclose_dep' with the same parameters."]
 		$crate::enclose_dep! {
-			($enc_args)* $b
+			$($all)*
 		}
 	}};
 	
 	// PREV
 	
 	[@!prev $($tt:tt)* ] => {{ // prev deprecated
-		#![deprecated = "Use 'ignore_prev' instead of the old '!prev'."]
+		#[deprecated = "Use 'ignore_prev' instead of the old '!prev'."]
 		crate::enclose! {
 			@ignore_prev $($tt)*
 		}
@@ -107,6 +107,11 @@ macro_rules! enclose {
 		$p :: $($all)*
 	}};
 	
+	[@prev ( $($enc_args:tt)* )] => {{ // empty
+		$crate::enclose_var! {
+			$( $enc_args )*
+		}
+	}};
 	[( $($enc_args:tt)* )] => {{ // empty
 		$crate::enclose_var! {
 			$( $enc_args )*

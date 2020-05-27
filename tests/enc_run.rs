@@ -28,11 +28,12 @@ fn check_type_and_runenc() {
 		assert_eq!(num_data, 1);
 	}));
 	
-	data.run_enclose(enclose!((data.a => mut num_data) move |_, num| {
+	data.run_enclose(enclose!(@deprecated(data.a => mut num_data) move |_, num| {
 		num_data += 1;
 		num_data += num;
 		assert_eq!(num_data, 1);
 	}));
+
 	
 	run_enclose!(
 		(data.a => _a) || StructData::null_fn
