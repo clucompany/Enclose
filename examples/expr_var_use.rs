@@ -11,7 +11,7 @@ fn main() {
 	// put the @ symbol at the beginning of the variable, and not forget to assign 
 	// a new name to the variable using =>.
 	my_enclose( enclose!((@*clone_data => mut clone_data, @*(add_data.clone()) => add_data) || {
-		// (mut *clone_data, *add_data) ->
+		// @*clone_data => mut clone_data, @*(add_data.clone()) => add_data
 		// let mut clone_data = *clone_data;
 		// let add_data = *(add_data.clone());
 		

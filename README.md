@@ -2,7 +2,7 @@
 A convenient macro for cloning values into a closure.
 
 [![Build Status](https://travis-ci.org/clucompany/Enclose.svg?branch=master)](https://travis-ci.org/clucompany/Enclose)
-[![Apache licensed](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
+[![Mit/Apache licensed](https://img.shields.io/badge/license-MIT%2FApache--2.0-blue)](./LICENSE)
 [![crates.io](http://meritbadge.herokuapp.com/enclose)](https://crates.io/crates/enclose)
 [![Documentation](https://docs.rs/enclose/badge.svg)](https://docs.rs/enclose)
 
@@ -171,3 +171,5 @@ fn my_enclose<F: FnOnce() -> R, R>(a: F) -> R {
 Copyright 2019-2020 #UlinProject (Denis Kotlyarov) Денис Котляров
 
 Licensed under the MIT License
+
+Licensed under the Apache License, Version 2.0
