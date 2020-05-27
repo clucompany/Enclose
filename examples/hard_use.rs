@@ -42,9 +42,7 @@ fn main() {
 			Err(e) => e.into_inner(),
 		};
 		assert_eq!(*data1_lock, 5);
-	}
-	
-	{	
+
 		// Check data2_lock
 		let data2_lock = match data2.write() {
 			Ok(a) => a,
