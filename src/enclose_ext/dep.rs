@@ -10,9 +10,9 @@ macro_rules! enclose_dep {
 		$($all)*
 	}};
 	
-	[] => {};
-	[ $($unk:tt)* ] => {
+	/*[ $($unk:tt)+ ] => {
 		compile_error!("Undefined entry or unsupported arguments, please double-check input.");
-	};
+	};*/
+	[] => {};
 }
 

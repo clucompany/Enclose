@@ -1,13 +1,11 @@
 
 mod var;
-mod dep;
-mod run;
+mod prev;
+mod ignore_prev;
 
-pub use self::dep::*;
-pub use self::run::*;
-pub use self::var::*;
+pub use self::ignore_prev::*;
 
-/// A macro for creating a closure, as well as cloning, copying values ​​into the closure.
+/// A macro for creating a closure, as well as cloning, copying values â€‹â€‹into the closure.
 #[macro_export]
 macro_rules! enclose {
 	// deprecated method.
@@ -19,45 +17,24 @@ macro_rules! enclose {
 	}};
 	
 	// PREV
-	
 	[@!prev $($tt:tt)* ] => {{ // prev deprecated
 		#[deprecated = "Use 'ignore_prev' instead of the old '!prev'."]
-		crate::enclose! {
-			@ignore_prev $($tt)*
+		crate::ignore_prev_enclose! {
+			$($tt)*
 		}
 	}};
 	
-	[@prev ( $($enc_args:tt)* ) $($add_prefix:tt)? || $($b:tt)* ] => {{ // empty args
-		$crate::enclose_var! {
-			$( $enc_args )*
-		}
-		$($add_prefix)? || $($b)*
-	}};
-	[@prev ( $($enc_args:tt)* ) $($add_prefix:tt)? | $($args:tt),* | $($b:tt)* ] => {{ // args
-		$crate::enclose_var! {
-			$( $enc_args )*
-		}
-		$($add_prefix)? | $($args),* | $($b)*
-	}};
-	
-	[@ignore_prev ( $($enc_args:tt)* ) $($add_prefix:tt)? || $($b:tt)* ] => {{ // empty args
-		$($add_prefix)? || {
-			$crate::enclose_var! {
-				$( $enc_args )*
-			}
-			$($b)*
-		}
-	}};
-	[@ignore_prev ( $($enc_args:tt)* ) $($add_prefix:tt)? | $( $args:tt ),* | $($b:tt)* ] => {{ // args
-		$($add_prefix)? | $($args),* | {
-			$crate::enclose_var! {
-				$( $enc_args )*
-			}
-			
-			$($b)*
+	[@prev $($tt:tt)* ] => {{ // empty args
+		$crate::prev_enclose! {
+			$( $tt )*
 		}
 	}};
 	
+	[@ignore_prev $($tt:tt)* ] => {{ // empty args
+		$crate::ignore_prev_enclose! {
+			$( $tt )*
+		}
+	}};
 	
 	// default methods
 	[( $($enc_args:tt)* ) move || $($b:tt)* ] => {{ // move, empty args
@@ -83,8 +60,8 @@ macro_rules! enclose {
 			$($b)*
 		}
 	}};
-	[( $($enc_args:tt)* ) | $($args:tt),* | $($b:tt)* ] => {{ // args
-		| $( $args ),* | {
+	[( $($enc_args:tt)* ) | $($args:tt),* | $($b:tt)*] => {{ // args
+		| $($args),* | {
 			$crate::enclose_var! {
 				$( $enc_args )*
 			}
@@ -99,29 +76,24 @@ macro_rules! enclose {
 		);
 	*/
 	// variable
-	[( $($enc_args:tt)* ) $p:tt :: $($all:tt)* ] => {{
+	[( $($enc_args:tt)* ) $p:tt $(:: $($all:tt)+)? ] => {{
 		$crate::enclose_var! {
 			$( $enc_args )*
 		}
 		
-		$p :: $($all)*
+		$p $(:: $($all)+)?
 	}};
 	
-	[@prev ( $($enc_args:tt)* )] => {{ // empty
-		$crate::enclose_var! {
-			$( $enc_args )*
-		}
-	}};
 	[( $($enc_args:tt)* )] => {{ // empty
 		$crate::enclose_var! {
 			$( $enc_args )*
 		}
 	}};
 	
-	[] => {};
-	[ $($unk:tt)* ] => {
+	[ $($unk:tt)+ ] => {
 		compile_error!("Undefined entry or unsupported arguments, please double-check input.");
 	};
+	[] => {};
 }
 
 ///Macro for cloning values to close. Alternative short record.

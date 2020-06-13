@@ -13,9 +13,17 @@ impl MutexSafeData {
 	pub fn new(def: usize) -> Self {
 		MutexSafeData(Mutex::new(def))
 	}
+	#[allow(dead_code)]
+	#[inline]
 	pub fn set(&self, size: usize) {
 		*self.get_mut() = size;
 	}
+	#[allow(dead_code)]
+	#[inline]
+	pub fn add(&self, size: usize) {
+		*self.get_mut() += size;
+	}
+	#[inline]
 	pub fn get_mut<'a>(&'a self) -> MutexGuard<'a, usize> {
 		match self.0.lock() {
 			Ok(a) => a,
@@ -25,31 +33,67 @@ impl MutexSafeData {
 }
 
 #[test]
-fn thread_onevalue() {
+fn clone_enc_macros() {
 	let mutex_data = Arc::new(MutexSafeData::new(0));
-	let thread = thread::spawn( enclose!((mutex_data) move || { //NEW THREAD, NEW ARC!
-		//let data = data.clone();
-		
-		mutex_data.set(10);
-	}));
-
-	thread.join().unwrap();
-	assert_eq!(*mutex_data.get_mut(), 10);
+	let mutex_data2 = Arc::new(MutexSafeData::new(0));
+	
+	// one value
+	run_enclose!((mutex_data) || {
+		mutex_data.add(1);
+	});
+	
+	// two value
+	run_enclose!((mutex_data, mutex_data2) || {
+		mutex_data.add(1);
+		mutex_data2.add(1);
+	});
+	
+	// one alias
+	run_enclose!((mutex_data => m1) || {
+		m1.add(1);
+	});
+	
+	// two alias
+	run_enclose!((mutex_data => m1, mutex_data2 => m2) || {
+		m1.add(1);
+		m2.add(1);
+	});
+	
+	// combination
+	run_enclose!((mutex_data, mutex_data2 => m2) || {		
+		mutex_data.add(1);
+		m2.add(1);
+	});
+	
+	assert_eq!(*mutex_data.get_mut(), 5);
+	assert_eq!(*mutex_data2.get_mut(), 3);
 }
 
 #[test]
-fn thread_onevalue_alias() {
+fn test_unk_operations() {
 	let mutex_data = Arc::new(MutexSafeData::new(0));
-	assert_eq!(*mutex_data.get_mut(), 0);
-	let thread = thread::spawn( enclose!((mutex_data => new_data) move || { //NEW THREAD, NEW ARC!
-		//let data = data.clone();
-		
-		new_data.set(10);
-	}));
-
-	thread.join().unwrap();
-	assert_eq!(*mutex_data.get_mut(), 10);
+	let mutex_data2 = Arc::new(MutexSafeData::new(0));
+	
+	// one
+	run_enclose!((@mutex_data.clone() => m1) || {
+		m1.add(1);
+	});
+	
+	// two
+	run_enclose!((@mutex_data.clone() => m1, @mutex_data2.clone() => m2) || {
+		m1.add(1);
+		m2.add(1);
+	});
+	
+	// unk operations
+	run_enclose!((@{ mutex_data2.set(1); mutex_data2.clone() } => m2) || {
+		m2.add(1);
+	});
+	
+	assert_eq!(*mutex_data.get_mut(), 2);
+	assert_eq!(*mutex_data2.get_mut(), 2);
 }
+
 
 #[test]
 fn threadpool_twovalue_and_alias() {
@@ -90,7 +134,7 @@ fn threadpool_twovalue_and_alias() {
 }
 
 #[test]
-fn appeal_self() {
+fn selfalias() {
 	#[derive(Debug, Clone, PartialEq, PartialOrd)]
 	struct CheckData {
 		a: u32,

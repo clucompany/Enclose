@@ -6,7 +6,6 @@ fn main() {
 	let clone_data = Arc::new(0);
 	let add_data = Arc::new(100);
 	
-	
 	// I also note that any expressions can be used, but the main thing is to 
 	// put the @ symbol at the beginning of the variable, and not forget to assign 
 	// a new name to the variable using =>.

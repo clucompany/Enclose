@@ -213,4 +213,15 @@ Licensed under the Apache License, Version 2.0
 #![no_std]
 
 mod enclose;
+mod enclose_ext {
+	mod dep;
+	mod run;
+	mod set;
+	
+	pub use self::dep::*;
+	pub use self::run::*;
+	pub use self::set::*;
+}
+
 pub use self::enclose::*;
+pub use self::enclose_ext::*;
