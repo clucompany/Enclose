@@ -213,15 +213,26 @@ Licensed under the Apache License, Version 2.0
 #![no_std]
 
 mod enclose;
+pub use self::enclose::*;
+
+// ext
+#[cfg(not(disable_ext))]
 mod enclose_ext {
-	mod dep;
 	mod run;
 	mod set;
 	
-	pub use self::dep::*;
 	pub use self::run::*;
 	pub use self::set::*;
 }
 
-pub use self::enclose::*;
+#[cfg(not(disable_ext))]
 pub use self::enclose_ext::*;
+//
+
+// dep
+#[cfg(not(disable_dep))]
+mod dep;
+
+#[cfg(not(disable_dep))]
+pub use self::dep::*;
+//

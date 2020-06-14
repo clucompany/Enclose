@@ -87,6 +87,26 @@ macro_rules! enclose_var {
 	};
 	//
 	
+	// ref
+	[ ref mut $a: ident $(: $ty:ty)?
+		$(, $($tt:tt)+)?
+	] => {
+		let ref mut $a $(: $ty)? = $a;
+		
+		$( $crate::enclose_var! {
+			$($tt)+ 
+		})?
+	};
+	[ ref $a: ident $(: $ty:ty)?
+		$(, $($tt:tt)+)?
+	] => {
+		let ref $a $(: $ty)? = $a;
+		
+		$( $crate::enclose_var! {
+			$($tt)+ 
+		})?
+	};
+	// end move
 	// move
 	[ move mut $a: ident $(: $ty:ty)?
 		$(, $($tt:tt)+)?

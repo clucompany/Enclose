@@ -2,11 +2,10 @@
 #[macro_export]
 macro_rules! set_enclose {
 	// box def
-	[ $i:ident = box $(@$p_tt:tt)? ($($enc_args:tt)*) $($enc_prefix:ident)? || $b:block $(as $as_ty:ty)? ; $($all:tt)* ] => {
+	[ $i:ident = box $(@$p_tt:tt $($p_tt2:tt)?)? ($($enc_args:tt)*) $($enc_prefix:ident)? || $b:block $(as $as_ty:ty)? ; $($all:tt)* ] => {
 		$i = Box::new($crate::enclose! {
-			$(@$p_tt)?
+			$(@$p_tt $($p_tt2)? )?
 			($($enc_args)*)
-			
 			
 			$($enc_prefix)? || $b
 		}) $(as $as_ty)?;
@@ -15,11 +14,10 @@ macro_rules! set_enclose {
 			$($all)*
 		}
 	};
-	[ $i:ident = box $(@$p_tt:tt)? ($($enc_args:tt)*) $($enc_prefix:ident)? | $($args:tt),* | $b:block $(as $as_ty:ty)? ; $($all:tt)* ] => {
+	[ $i:ident = box $(@$p_tt:tt $($p_tt2:tt)?)? ($($enc_args:tt)*) $($enc_prefix:ident)? | $($args:tt),* | $b:block $(as $as_ty:ty)? ; $($all:tt)* ] => {
 		$i = Box::new($crate::enclose! {
-			$(@$p_tt)?
+			$(@$p_tt $($p_tt2)? )?
 			($($enc_args)*)
-			
 			
 			$($enc_prefix)? | $($args),* | $b
 		}) $(as $as_ty)?;
@@ -31,11 +29,10 @@ macro_rules! set_enclose {
 	// def
 	
 	// def
-	[ $i:ident = $(& $($l:lifetime)?)? $(@$p_tt:tt)? ($($enc_args:tt)*) $($enc_prefix:ident)? || $b:block $(as $as_ty:ty)? ; $($all:tt)* ] => {
+	[ $i:ident = $(& $($l:lifetime)?)? $(@$p_tt:tt $($p_tt2:tt)?)? ($($enc_args:tt)*) $($enc_prefix:ident)? || $b:block $(as $as_ty:ty)? ; $($all:tt)* ] => {
 		$i = $(& $($l)?)? $crate::enclose! {
-			$(@$p_tt)?
+			$(@$p_tt $($p_tt2)? )?
 			($($enc_args)*)
-			
 			
 			$($enc_prefix)? || $b
 		} $(as $as_ty)?;
@@ -44,11 +41,10 @@ macro_rules! set_enclose {
 			$($all)*
 		}
 	};
-	[ $i:ident = $(& $l:lifetime)? $(@$p_tt:tt)? ($($enc_args:tt)*) $($enc_prefix:ident)? | $($args:tt),* | $b:block $(as $as_ty:ty)? ; $($all:tt)* ] => {
+	[ $i:ident = $(& $l:lifetime)? $(@$p_tt:tt $($p_tt2:tt)?)? ($($enc_args:tt)*) $($enc_prefix:ident)? | $($args:tt),* | $b:block $(as $as_ty:ty)? ; $($all:tt)* ] => {
 		$i = $(& $l)? $crate::enclose! {
-			$(@$p_tt)?
+			$(@$p_tt $($p_tt2)? )?
 			($($enc_args)*)
-			
 			
 			$($enc_prefix)? | $($args),* | $b
 		} $(as $as_ty)?;
@@ -59,7 +55,14 @@ macro_rules! set_enclose {
 	};
 	// def
 	
-	// block
+	// unk block
+	[ $i:ident = {$($b:tt)*}; $($all:tt)* ] => {{
+		$i = {$($b)*};
+		
+		$crate::set_enclose! {
+			$($all)*
+		}
+	}};
 	[ {$($b:tt)*}; $($all:tt)* ] => {{
 		$($b)*
 		

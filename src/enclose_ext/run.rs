@@ -20,10 +20,10 @@
 ///```
 #[macro_export]
 macro_rules! run_enclose {
-	[ $(@$prefix:tt)? ($($args:tt)*) $($all:tt)*] => {{
+	[ $(@$prefix:tt $($prefix2:tt)? )? ($($args:tt)*) $($all:tt)*] => {{
 		#[allow(unused_mut)]
 		let mut enclose = $crate::enclose! (
-			$(@$prefix)?
+			$(@$prefix $($prefix2)? )?
 			($($args)*)
 			
 			$($all)*
