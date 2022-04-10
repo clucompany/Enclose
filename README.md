@@ -1,10 +1,12 @@
 # Enclose
-A convenient macro for cloning values into a closure.
 
+[![CI](https://github.com/clucompany/cluFlock/actions/workflows/CI.yml/badge.svg?event=push)](https://github.com/clucompany/cluFlock/actions/workflows/CI.yml)
 [![Build Status](https://travis-ci.org/clucompany/Enclose.svg?branch=master)](https://travis-ci.org/clucompany/Enclose)
 [![Mit/Apache licensed](https://img.shields.io/badge/license-MIT%2FApache--2.0-blue)](./LICENSE)
-[![crates.io](http://meritbadge.herokuapp.com/enclose)](https://crates.io/crates/enclose)
+[![crates.io](https://img.shields.io/crates/v/enclose)](https://crates.io/crates/enclose)
 [![Documentation](https://docs.rs/enclose/badge.svg)](https://docs.rs/enclose)
+
+A convenient macro for cloning values into a closure.
 
 
 ### EasyUse
