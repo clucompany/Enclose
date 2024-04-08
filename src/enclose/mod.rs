@@ -3,8 +3,11 @@ mod var;
 mod prev;
 mod ignore_prev;
 
+#[allow(unused_imports)]
 pub use self::var::*;
+#[allow(unused_imports)]
 pub use self::prev::*;
+#[allow(unused_imports)]
 pub use self::ignore_prev::*;
 
 /// A macro for creating a closure, as well as cloning, copying values â€‹â€‹into the closure.
@@ -105,7 +108,7 @@ macro_rules! enclose {
 	[] => {};
 }
 
-///Macro for cloning values to close. Alternative short record.
+/// Macro for cloning values to close. Alternative short record.
 #[macro_export]
 macro_rules! enc {
 	[$($tt:tt)*] => {

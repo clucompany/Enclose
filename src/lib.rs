@@ -1,4 +1,4 @@
-//Copyright (c) 2019-2020 #UlinProject Denis Kotlyarov (Денис Котляров)
+//Copyright (c) 2019-2024 #UlinProject Denis Kotlyarov (Денис Котляров)
 
 //-----------------------------------------------------------------------------
 //Licensed under the Apache License, Version 2.0 (the "License");
@@ -35,7 +35,7 @@
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //SOFTWARE.
 
-// #Ulin Project 20
+// #Ulin Project 2022
 // #Ulin Project 1819
 
 /*!
@@ -200,19 +200,12 @@ fn my_enclose<F: FnOnce() -> R, R>(a: F) -> R {
 }
 ```
 
-### License
-
-Copyright 2019-2020 #UlinProject (Denis Kotlyarov) Денис Котляров
-
-Licensed under the MIT License
-
-Licensed under the Apache License, Version 2.0
-
 */
 
 #![no_std]
 
 mod enclose;
+#[allow(unused_imports)]
 pub use self::enclose::*;
 
 // ext
@@ -221,10 +214,13 @@ mod enclose_ext {
 	mod run;
 	mod set;
 	
+	#[allow(unused_imports)]
 	pub use self::run::*;
+	#[allow(unused_imports)]
 	pub use self::set::*;
 }
 
+#[allow(unused_imports)]
 #[cfg(not(disable_ext))]
 pub use self::enclose_ext::*;
 //
@@ -233,6 +229,7 @@ pub use self::enclose_ext::*;
 #[cfg(not(disable_dep))]
 mod dep;
 
+#[allow(unused_imports)]
 #[cfg(not(disable_dep))]
 pub use self::dep::*;
 //
