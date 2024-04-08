@@ -1,13 +1,51 @@
-# Enclose
+<div id="header" align="center">
 
-[![CI](https://github.com/clucompany/cluFlock/actions/workflows/CI.yml/badge.svg?event=push)](https://github.com/clucompany/cluFlock/actions/workflows/CI.yml)
-[![Build Status](https://travis-ci.org/clucompany/Enclose.svg?branch=master)](https://travis-ci.org/clucompany/Enclose)
-[![Mit/Apache licensed](https://img.shields.io/badge/license-MIT%2FApache--2.0-blue)](./LICENSE)
-[![crates.io](https://img.shields.io/crates/v/enclose)](https://crates.io/crates/enclose)
-[![Documentation](https://docs.rs/enclose/badge.svg)](https://docs.rs/enclose)
+  <b>[enclose]</b>
+  
+  (A convenient macro for cloning values into a closure.)
+  </br></br>
 
-A convenient macro for cloning values into a closure.
+<div id="badges">
+  <a href="./LICENSE_MIT">
+    <img src="https://github.com/UlinProject/img/blob/main/short_32/mit.png?raw=true" alt="mit"/>
+  </a>
+  <a href="./LICENSE_APACHE">
+    <img src="https://github.com/UlinProject/img/blob/main/short_32/apache2.png?raw=true" alt="apache2"/>
+  </a>
+  <a href="https://crates.io/crates/enclose">
+    <img src="https://github.com/UlinProject/img/blob/main/short_32/cratesio.png?raw=true" alt="cratesio"/>
+  </a>
+  <a href="https://docs.rs/enclose">
+    <img src="https://github.com/UlinProject/img/blob/main/short_32/docrs.png?raw=true" alt="docrs"/>
+  </a>
+  <a href="https://github.com/denisandroid">
+    <img src="https://github.com/UlinProject/img/blob/main/short_32/uproject.png?raw=true" alt="uproject"/>
+  </a>
+  <a href="https://github.com/clucompany">
+    <img src="https://github.com/UlinProject/img/blob/main/short_32/clulab.png?raw=true" alt="clulab"/>
+  </a>
+	
+  [![CI](https://github.com/clucompany/enclose/actions/workflows/CI.yml/badge.svg?event=push)](https://github.com/clucompany/enclose/actions/workflows/CI.yml) 
 
+
+</div>
+</div>
+
+## Usage:
+
+Add this to your Cargo.toml:
+
+```toml
+[dependencies]
+enclose = "1.1.8"
+```
+
+and this to your source code:
+```rust
+use enclose::enclose;
+```
+
+## Example:
 
 ### EasyUse
 
@@ -168,10 +206,38 @@ fn my_enclose<F: FnOnce() -> R, R>(a: F) -> R {
 }
 ```
 
-### License
+<a href="./examples">
+  See all
+</a>
 
-Copyright 2022 #UlinProject (Denis Kotlyarov) Денис Котляров
+## License:
+This project has a dual license according to (LICENSE-MIT) and (LICENSE-APACHE-2-0).
 
-Licensed under the MIT License
+<div align="left">
+  <a href="https://github.com/denisandroid">
+    <img align="left" src="https://github.com/UlinProject/img/blob/main/block_220_100/uproject.png?raw=true" alt="uproject"/>
+  </a>
+  <b>&nbsp;Copyright (c) 2019-2024 #UlinProject</b>
+	
+  <b>&nbsp;(Denis Kotlyarov).</b>
+  </br></br></br>
+</div>
 
-Licensed under the Apache License, Version 2.0
+### Apache License:
+<div align="left">
+  <a href="./LICENSE_APACHE">
+    <img align="left" src="https://github.com/UlinProject/img/blob/main/block_220_100/apache2.png?raw=true" alt="apache2"/>
+    
+  </a>
+  <b>&nbsp;Licensed under the Apache License, Version 2.0.</b>
+  </br></br></br></br>
+</div>
+
+### MIT License:
+<div align="left">
+  <a href="./LICENSE_MIT">
+    <img align="left" src="https://github.com/UlinProject/img/blob/main/block_220_100/mit.png?raw=true" alt="mit"/>
+  </a>
+  <b>&nbsp;Licensed under the MIT License.</b>
+  </br></br></br></br>
+</div>
