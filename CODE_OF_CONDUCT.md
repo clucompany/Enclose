@@ -6,7 +6,7 @@
   </br></br>
 </div>
 
-## Description:
+## Description
 
 Our community is dedicated to providing a respectful and inclusive environment for everyone, regardless of gender, age, sexual orientation, disability, physical appearance, body size, race, nationality, or religion.
 

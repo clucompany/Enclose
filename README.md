@@ -2,7 +2,7 @@
 
   <b>[enclose]</b>
   
-  (A convenient macro for cloning values into a closure.)
+  (A convenient macro, for cloning values into a closure.)
   </br></br>
 
 <div id="badges">
@@ -31,21 +31,22 @@
 </div>
 </div>
 
-## Usage:
+## Usage
 
 Add this to your Cargo.toml:
 
 ```toml
 [dependencies]
-enclose = "1.1.8"
+enclose = "1.2.0"
 ```
 
 and this to your source code:
+
 ```rust
 use enclose::enclose;
 ```
 
-## Example:
+## Example
 
 ### EasyUse
 
@@ -210,7 +211,8 @@ fn my_enclose<F: FnOnce() -> R, R>(a: F) -> R {
   See all
 </a>
 
-## License:
+## License
+
 This project has a dual license according to (LICENSE-MIT) and (LICENSE-APACHE-2-0).
 
 <div align="left">
@@ -223,7 +225,8 @@ This project has a dual license according to (LICENSE-MIT) and (LICENSE-APACHE-2
   </br></br></br>
 </div>
 
-### Apache License:
+### Apache License
+
 <div align="left">
   <a href="./LICENSE_APACHE">
     <img align="left" src="https://github.com/UlinProject/img/blob/main/block_220_100/apache2.png?raw=true" alt="apache2"/>
@@ -233,7 +236,8 @@ This project has a dual license according to (LICENSE-MIT) and (LICENSE-APACHE-2
   </br></br></br></br>
 </div>
 
-### MIT License:
+### MIT License
+
 <div align="left">
   <a href="./LICENSE_MIT">
     <img align="left" src="https://github.com/UlinProject/img/blob/main/block_220_100/mit.png?raw=true" alt="mit"/>

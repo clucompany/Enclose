@@ -8,13 +8,8 @@ license = "MIT/Apache-2.0"
 readme = "README.md"
 edition = "2021"
 
-description = "A convenient macro for cloning values into a closure."
+description = "A convenient macro, for cloning values into a closure."
 keywords = ["enclose", "enclose_macro", "macro", "no_std", "clucompany"]
 categories = ["development-tools"]
-
-[features]
-default = ["disable_dep"]
-disable_ext = []
-disable_dep = []
 
 [dependencies]
