@@ -1,4 +1,4 @@
-//Copyright (c) 2019-2024 #UlinProject Denis Kotlyarov (Денис Котляров)
+//Copyright (c) 2019-2025 #UlinProject Denis Kotlyarov (Денис Котляров)
 
 //-----------------------------------------------------------------------------
 //Licensed under the Apache License, Version 2.0 (the "License");
@@ -35,7 +35,7 @@
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //SOFTWARE.
 
-// #Ulin Project 1819 2022 2024
+// #Ulin Project 1819 2025
 
 /*!
 A convenient macro, for cloning values into a closure.
