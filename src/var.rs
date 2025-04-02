@@ -67,19 +67,20 @@
 /// ```
 #[macro_export]
 macro_rules! enclose_var {
+	[ $(,)? ] => {};
 	[
 		// ref operation
 		// (ref a => mut b: String)
 		// (ref a => mut b)
 		ref $a: expr => mut $b: ident $(: $ty:ty)?
 
-		$(, $($tt:tt)+ )?
+		$(, $($tt:tt)* )?
 	] => {
 		let ref mut $b $(: $ty)? = $a;
 
 		$(
 			$crate::enclose_var! {
-				$($tt)+
+				$($tt)*
 			}
 		)?
 	};
@@ -89,13 +90,13 @@ macro_rules! enclose_var {
 		// (ref a => b)
 		ref $a: expr => $b: ident $(: $ty:ty)?
 
-		$(, $($tt:tt)+ )?
+		$(, $($tt:tt)* )?
 	] => {
 		let ref $b $(: $ty)? = $a;
 
 		$(
 			$crate::enclose_var! {
-				$($tt)+
+				$($tt)*
 			}
 		)?
 	};
@@ -107,13 +108,13 @@ macro_rules! enclose_var {
 		// (move a => mut b)
 		move $a: expr => mut $b: ident $(: $ty:ty)?
 
-		$(, $($tt:tt)+ )?
+		$(, $($tt:tt)* )?
 	] => {
 		let mut $b $(: $ty)? = $a;
 
 		$(
 			$crate::enclose_var! {
-				$($tt)+
+				$($tt)*
 			}
 		)?
 	};
@@ -124,13 +125,13 @@ macro_rules! enclose_var {
 		// (move a => b)
 		move $a: expr => $b: ident $(: $ty:ty)?
 
-		$(, $($tt:tt)+ )?
+		$(, $($tt:tt)* )?
 	] => {
 		let $b $(: $ty)? = $a;
 
 		$(
 			$crate::enclose_var! {
-				$($tt)+
+				$($tt)*
 			}
 		)?
 	};
@@ -142,13 +143,13 @@ macro_rules! enclose_var {
 		// (*a => mut b)
 		*$a: expr => mut $b: ident $(: $ty:ty)?
 
-		$(, $($tt:tt)+ )?
+		$(, $($tt:tt)* )?
 	] => {
 		let mut $b $(: $ty)? = *$a;
 
 		$(
 			$crate::enclose_var! {
-				$($tt)+
+				$($tt)*
 			}
 		)?
 	};
@@ -159,13 +160,13 @@ macro_rules! enclose_var {
 		// (*a => b)
 		*$a: expr => $b: ident $(: $ty:ty)?
 
-		$(, $($tt:tt)+ )?
+		$(, $($tt:tt)* )?
 	] => {
 		let $b $(: $ty)? = *$a;
 
 		$(
 			$crate::enclose_var! {
-				$($tt)+
+				$($tt)*
 			}
 		)?
 	};
@@ -177,13 +178,13 @@ macro_rules! enclose_var {
 		// (@(1+1) => mut b)
 		@$a: expr => mut $b: ident $(: $ty:ty)?
 
-		$(, $($tt:tt)+ )?
+		$(, $($tt:tt)* )?
 	] => {
 		let mut $b $(: $ty)? = $a;
 
 		$(
 			$crate::enclose_var! {
-				$($tt)+
+				$($tt)*
 			}
 		)?
 	};
@@ -194,13 +195,13 @@ macro_rules! enclose_var {
 		// (@(1+1) => b)
 		@$a: expr => $b: ident $(: $ty:ty)?
 
-		$(, $($tt:tt)+ )?
+		$(, $($tt:tt)* )?
 	] => {
 		let $b $(: $ty)? = $a;
 
 		$(
 			$crate::enclose_var! {
-				$($tt)+
+				$($tt)*
 			}
 		)?
 	};
@@ -212,13 +213,13 @@ macro_rules! enclose_var {
 		// (ref mut a)
 		ref mut $a: ident $(: $ty:ty)?
 
-		$(, $($tt:tt)+)?
+		$(, $($tt:tt)*)?
 	] => {
 		let ref mut $a $(: $ty)? = $a;
 
 		$(
 			$crate::enclose_var! {
-				$($tt)+
+				$($tt)*
 			}
 		)?
 	};
@@ -229,13 +230,13 @@ macro_rules! enclose_var {
 		// (ref a)
 		ref $a: ident $(: $ty:ty)?
 
-		$(, $($tt:tt)+)?
+		$(, $($tt:tt)*)?
 	] => {
 		let ref $a $(: $ty)? = $a;
 
 		$(
 			$crate::enclose_var! {
-				$($tt)+
+				$($tt)*
 			}
 		)?
 	};
@@ -247,13 +248,13 @@ macro_rules! enclose_var {
 		// (move mut a)
 		move mut $a: ident $(: $ty:ty)?
 
-		$(, $($tt:tt)+)?
+		$(, $($tt:tt)*)?
 	] => {
 		let mut $a $(: $ty)? = $a;
 
 		$(
 			$crate::enclose_var! {
-				$($tt)+
+				$($tt)*
 			}
 		)?
 	};
@@ -263,13 +264,13 @@ macro_rules! enclose_var {
 		// (move a)
 		move $a: ident $(: $ty:ty)?
 
-		$(, $($tt:tt)+)?
+		$(, $($tt:tt)*)?
 	] => {
 		let $a $(: $ty)? = $a;
 
 		$(
 			$crate::enclose_var! {
-				$($tt)+
+				$($tt)*
 			}
 		)?
 	};
@@ -281,13 +282,13 @@ macro_rules! enclose_var {
 		// (a => mut b)
 		$a: expr => mut $b: ident $(: $ty:ty)?
 
-		$(, $($tt:tt)+ )?
+		$(, $($tt:tt)* )?
 	] => {
 		let mut $b $(: $ty)? = $a.clone();
 
 		$(
 			$crate::enclose_var! {
-				$($tt)+
+				$($tt)*
 			}
 		)?
 	};
@@ -297,51 +298,51 @@ macro_rules! enclose_var {
 		// (b => b)
 		$a: expr => $b: ident $(: $ty:ty)?
 
-		$(, $($tt:tt)+ )?
+		$(, $($tt:tt)* )?
 	] => {
 		let $b $(: $ty)? = $a.clone();
 
 		$(
 			$crate::enclose_var! {
-				$($tt)+
+				$($tt)*
 			}
 		)?
 	};
 	// end
 
 	[
-		// copy
+		// deref
 		// (mut *a: String)
 		// (mut *a)
 		mut *$a: ident $(: $ty:ty)?
 
-		$(, $($tt:tt)+)?
+		$(, $($tt:tt)*)?
 	] => {
 		let mut $a $(: $ty)? = *$a;
 
 		$(
 			$crate::enclose_var! {
-				$($tt)+
+				$($tt)*
 			}
 		)?
 	};
 	[
-		// copy
+		// deref
 		// (*a: String)
 		// (*a)
 		*$a: ident $(: $ty:ty)?
 
-		$(, $($tt:tt)+)?
+		$(, $($tt:tt)*)?
 	] => {
 		let $a $(: $ty)? = *$a;
 
 		$(
 			$crate::enclose_var! {
-				$($tt)+
+				$($tt)*
 			}
 		)?
 	};
-	// end copy
+	// end deref
 
 	[
 		// clone
@@ -349,13 +350,13 @@ macro_rules! enclose_var {
 		// (mut a)
 		mut $a: ident $(: $ty:ty)?
 
-		$(, $($tt:tt)+)?
+		$(, $($tt:tt)*)?
 	] => {
 		let mut $a $(: $ty)? = $a.clone();
 
 		$(
 			$crate::enclose_var! {
-				$($tt)+
+				$($tt)*
 			}
 		)?
 	};
@@ -365,13 +366,13 @@ macro_rules! enclose_var {
 		// (a)
 		$a: ident $(: $ty:ty)?
 
-		$(, $($tt:tt)+)?
+		$(, $($tt:tt)*)?
 	] => {
 		let $a $(: $ty)? = $a.clone();
 
 		$(
 			$crate::enclose_var! {
-				$($tt)+
+				$($tt)*
 			}
 		)?
 	};
@@ -382,18 +383,21 @@ macro_rules! enclose_var {
 		// { panic!("12"); }
 		{$($b:tt)*}
 
-		$(, $($tt:tt)+)?
+		$(, $($tt:tt)*)?
 	] => {
-		let _hidden = {$($b)*};
+		let _hidden = {
+			$($b)*
+		};
 
-		$( $crate::enclose_var! {
-			$($tt)+
-		})?
+		$(
+			$crate::enclose_var! {
+				$($tt)*
+			}
+		)?
 	};
 	// end block
 
 	/*[ $($unk:tt)+ ] => {
-		compile_error!("Undefined entry or unsupported arguments, please double-check the input.")
+		compile_error!("Undefined entry or unsupported arguments. Please check your input again.")
 	};*/
-	[ $(,)? ] => {};
 }

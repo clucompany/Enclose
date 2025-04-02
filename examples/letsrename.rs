@@ -6,7 +6,7 @@ use enclose::enclose;
 
 fn main() {
 	let mutex_data = Arc::new(Mutex::new(0));
-	let thread = thread::spawn(enclose!((mutex_data => d, @1024 => my_var) move || {
+	let thread = thread::spawn(enclose!((mutex_data => d, @1024 => my_var,) move || {
 		// (mutex_data => d) ->
 		// let d = mutex_data.clone();
 		// let my_var = 1024;

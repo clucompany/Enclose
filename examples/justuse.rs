@@ -4,7 +4,7 @@ fn main() {
 	let clone_data = 0;
 	let add_data = 100;
 
-	my_enclose(enclose!((mut clone_data, add_data) || {
+	my_enclose(enclose!((mut clone_data, add_data,) || {
 		// (mut clone_data, add_data) ->
 		// let mut clone_data = clone_data.clone();
 		// let add_data = add_data.clone();

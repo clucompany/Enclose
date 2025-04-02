@@ -348,6 +348,42 @@ mod var;
 #[macro_export]
 macro_rules! enclose {
 	[
+		// (a, b) async || true
+		( $($enc_args:tt)* ) async move || $($b:tt)*
+	] => {{ // async, empty args
+		$crate::enclose_var! {
+			$( $enc_args )*
+		}
+		async move || $($b)*
+	}};
+	[
+		// (a, b) async move |c, d| true
+		( $($enc_args:tt)* ) async move | $($args:tt),* | $($b:tt)*
+	] => {{ // async, args
+		$crate::enclose_var! {
+			$( $enc_args )*
+		}
+		async move | $($args),* | $($b)*
+	}};
+	[
+		// (a, b) async || true
+		( $($enc_args:tt)* ) async || $($b:tt)*
+	] => {{ // async, empty args
+		$crate::enclose_var! {
+			$( $enc_args )*
+		}
+		async || $($b)*
+	}};
+	[
+		// (a, b) async |c, d| true
+		( $($enc_args:tt)* ) async | $($args:tt),* | $($b:tt)*
+	] => {{ // async, args
+		$crate::enclose_var! {
+			$( $enc_args )*
+		}
+		async | $($args),* | $($b)*
+	}};
+	[
 		// (a, b) move || true
 		( $($enc_args:tt)* ) move || $($b:tt)*
 	] => {{ // move, empty args

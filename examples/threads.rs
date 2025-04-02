@@ -8,7 +8,7 @@ fn main() {
 	let mutex_left_data = Arc::new(Mutex::new(0));
 	let right_data = Arc::new(1);
 
-	let thread = thread::spawn(enclose!((mutex_left_data, right_data) move || {
+	let thread = thread::spawn(enclose!((mutex_left_data, right_data,) move || {
 		// (mutex_left_data, right_data) ->
 		// let mutex_left_data = mutex_left_data.clone();
 		// let right_data = right_data.clone();

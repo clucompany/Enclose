@@ -2,7 +2,7 @@ use enclose::enclose;
 
 fn main() {
 	let mut clone_data = 2;
-	my_enclose(enclose!((ref clone_data => mut ref_clone_data) || {
+	my_enclose(enclose!((ref clone_data => mut ref_clone_data,) || {
 		// (ref clone_data => mut ref_clone_data) ->
 		// let ref mut ref_clone_data = clone_data;
 
