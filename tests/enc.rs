@@ -110,7 +110,7 @@ fn threadpool_twovalue_and_alias() {
 
 	for _a in 0..count_thread {
 		join_all.push({
-			thread::spawn(enclose!((v1, v2, count_thread => alias_cthreads) move || {
+			thread::spawn(enclose!((v1, v2, count_thread => alias_cthreads,) move || {
 				assert_eq!(alias_cthreads, 5);
 
 				*v1.get_mut() += 1;
@@ -150,7 +150,7 @@ fn selfalias() {
 		}
 
 		pub fn calculate(&self, mul_num: &u32) -> u32 {
-			enc!((*mul_num, self.a => mut num0) move || {
+			enc!((*mul_num, self.a => mut num0,) move || {
 				// (*mul_num, self.a => mut num0) ->
 				// let mul_num = *mul_num;
 				// let num0 = self.a.clone();

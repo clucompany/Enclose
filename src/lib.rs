@@ -446,18 +446,4 @@ macro_rules! enclose {
 /// copying values into the closure.
 ///
 /// Alternative short record `enclose`.
-#[macro_export]
-macro_rules! enc {
-	[
-		// (a, b) move || true
-		// (a, b) move |c, d| true
-		// (a, b) || true
-		// (a, b) |c, d| true
-		// (a, b) true
-		$($tt:tt)*
-	] => {
-		$crate::enclose! {
-			$($tt)*
-		}
-	};
-}
+pub use enclose as enc;

@@ -22,7 +22,7 @@ fn clone_count_operations() {
 	enc!((data => d) || {
 		assert_eq!(CHECK_COUNT_OPERATIONS.load(Ordering::SeqCst), 1); //Checking the number of operations
 
-		std::thread::spawn(enc!((d) move || {
+		std::thread::spawn(enc!((d,) move || {
 			assert_eq!(CHECK_COUNT_OPERATIONS.load(Ordering::SeqCst), 2); //Checking the number of operations
 
 			enc!((d) || {
