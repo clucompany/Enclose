@@ -69,8 +69,26 @@ fn clone_enc_macros() {
 		m2.add(1);
 	})();
 
-	assert_eq!(*mutex_data.get_mut(), 5);
-	assert_eq!(*mutex_data2.get_mut(), 3);
+	enc!((mutex_data), || {
+		mutex_data.add(1);
+	})();
+	enc!((mutex_data), |amount| mutex_data.add(amount))(1);
+	enc!((mutex_data, mutex_data2), move |amount| {
+		mutex_data.add(amount);
+		mutex_data2.add(amount);
+	})(1);
+
+	let text = String::from("hello");
+	let mut append = enc!((mut text), move || {
+		text.push('!');
+		text.len()
+	});
+	assert_eq!(append(), 6);
+	assert_eq!(append(), 7);
+	assert_eq!(text, "hello");
+
+	assert_eq!(*mutex_data.get_mut(), 8);
+	assert_eq!(*mutex_data2.get_mut(), 4);
 }
 
 #[test]

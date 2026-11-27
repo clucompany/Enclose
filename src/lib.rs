@@ -349,7 +349,7 @@ mod var;
 macro_rules! enclose {
 	[
 		// (a, b) async || true
-		( $($enc_args:tt)* ) async move || $($b:tt)*
+		( $($enc_args:tt)* ) $(,)? async move || $($b:tt)*
 	] => {{ // async, empty args
 		$crate::enclose_var! {
 			$( $enc_args )*
@@ -358,7 +358,7 @@ macro_rules! enclose {
 	}};
 	[
 		// (a, b) async move |c, d| true
-		( $($enc_args:tt)* ) async move | $($args:tt),* | $($b:tt)*
+		( $($enc_args:tt)* ) $(,)? async move | $($args:tt),* | $($b:tt)*
 	] => {{ // async, args
 		$crate::enclose_var! {
 			$( $enc_args )*
@@ -367,7 +367,7 @@ macro_rules! enclose {
 	}};
 	[
 		// (a, b) async || true
-		( $($enc_args:tt)* ) async || $($b:tt)*
+		( $($enc_args:tt)* ) $(,)? async || $($b:tt)*
 	] => {{ // async, empty args
 		$crate::enclose_var! {
 			$( $enc_args )*
@@ -376,7 +376,7 @@ macro_rules! enclose {
 	}};
 	[
 		// (a, b) async |c, d| true
-		( $($enc_args:tt)* ) async | $($args:tt),* | $($b:tt)*
+		( $($enc_args:tt)* ) $(,)? async | $($args:tt),* | $($b:tt)*
 	] => {{ // async, args
 		$crate::enclose_var! {
 			$( $enc_args )*
@@ -385,7 +385,7 @@ macro_rules! enclose {
 	}};
 	[
 		// (a, b) move || true
-		( $($enc_args:tt)* ) move || $($b:tt)*
+		( $($enc_args:tt)* ) $(,)? move || $($b:tt)*
 	] => {{ // move, empty args
 		$crate::enclose_var! {
 			$( $enc_args )*
@@ -394,7 +394,7 @@ macro_rules! enclose {
 	}};
 	[
 		// (a, b) move |c, d| true
-		( $($enc_args:tt)* ) move | $($args:tt),* | $($b:tt)*
+		( $($enc_args:tt)* ) $(,)? move | $($args:tt),* | $($b:tt)*
 	] => {{ // move, args
 		$crate::enclose_var! {
 			$( $enc_args )*
@@ -403,7 +403,7 @@ macro_rules! enclose {
 	}};
 	[
 		// (a, b) || true
-		( $($enc_args:tt)* ) || $($b:tt)*
+		( $($enc_args:tt)* ) $(,)? || $($b:tt)*
 	] => {{ // empty args
 		|| {
 			$crate::enclose_var! {
@@ -415,7 +415,7 @@ macro_rules! enclose {
 	}};
 	[
 		// (a, b) |c, d| true
-		( $($enc_args:tt)* ) | $($args:tt),* | $($b:tt)*
+		( $($enc_args:tt)* ) $(,)? | $($args:tt),* | $($b:tt)*
 	] => {{ // args
 		| $($args),* | {
 			$crate::enclose_var! {
